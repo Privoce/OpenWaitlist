@@ -23,7 +23,7 @@ function SuccessContent() {
 
   useEffect(() => {
     if (countdown === 0) {
-      router.push("/kiosk");
+      router.push("/kiosk/");
     }
   }, [countdown, router]);
 
@@ -58,7 +58,7 @@ function SuccessContent() {
         <div className="absolute bottom-0 left-0 right-0 pb-10 flex flex-col items-center">
           <button
             type="button"
-            onClick={() => router.push("/kiosk")}
+            onClick={() => router.push("/kiosk/")}
             className="bg-brand-gold text-brand-dark rounded-full px-16 py-4 font-semibold text-lg shadow-md mb-4 hover:bg-brand-gold/90 transition-colors"
           >
             Sounds Good ({countdown}s)

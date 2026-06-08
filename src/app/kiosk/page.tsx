@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { fetchSettings, fetchWaitlistCount } from "@/lib/data-access";
 import { PoweredBy } from "@/components/OpenWaitlistLogo";
 
 export default function KioskLandingPage() {
@@ -9,15 +10,12 @@ export default function KioskLandingPage() {
   const [restaurantName, setRestaurantName] = useState("");
 
   useEffect(() => {
-    fetch("/api/settings")
-      .then((r) => r.json())
-      .then((s) => setRestaurantName(s.restaurant_name));
+    fetchSettings().then((s) => setRestaurantName(s.restaurant_name));
   }, []);
 
   const handleStart = async () => {
-    const res = await fetch("/api/waitlist");
-    const { count } = await res.json();
-    router.push(count === 0 ? "/kiosk/add" : "/kiosk/join");
+    const count = await fetchWaitlistCount();
+    router.push(count === 0 ? "/kiosk/add/" : "/kiosk/join/");
   };
 
   return (

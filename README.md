@@ -39,6 +39,17 @@ Open [http://localhost:3000](http://localhost:3000)
 - All messages go to VoceChat user `437225` — set `VOCECHAT_BOT_API_KEY` in `.env.local` (see `.env.example`)
 - Test: `curl -X POST http://localhost:3000/api/notifications/test`
 
+## GitHub Pages
+
+Live demo: https://privoce.github.io/OpenWaitlist/
+
+The GitHub Pages build runs in the browser with localStorage (no server). VoceChat notifications are not available on Pages — run locally for full features:
+
+```bash
+cp .env.example .env.local   # add VoceChat key
+npm run dev
+```
+
 ## Data
 
 SQLite database stored at `data/openwaitlist.db`. Floor plan tables are seeded on first run; the waitlist starts empty.

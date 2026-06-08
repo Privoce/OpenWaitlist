@@ -3,6 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { formatPhone } from "@/lib/format";
+import {
+  createWaitlistEntry,
+  fetchWaitlistCount,
+} from "@/lib/data-access";
 import { useInactivityTimeout } from "@/hooks/useInactivityTimeout";
 
 export default function KioskAddPage() {
@@ -17,12 +21,10 @@ export default function KioskAddPage() {
   const [waitlistCount, setWaitlistCount] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch("/api/waitlist")
-      .then((r) => r.json())
-      .then((d) => setWaitlistCount(d.count));
+    fetchWaitlistCount().then(setWaitlistCount);
   }, []);
 
-  useInactivityTimeout(() => router.push("/kiosk"), 60_000);
+  useInactivityTimeout(() => router.push("/kiosk/"), 60_000);
 
   const handlePhoneKey = (key: string) => {
     const digits = phone.replace(/\D/g, "");
@@ -67,26 +69,21 @@ export default function KioskAddPage() {
 
     setSubmitting(true);
     try {
-      const res = await fetch("/api/waitlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name.trim(),
-          phone,
-          party_size: parseInt(partySize, 10),
-          child_count: childCount ? parseInt(childCount, 10) : 0,
-          source: "kiosk",
-        }),
+      const result = await createWaitlistEntry({
+        name: name.trim(),
+        phone,
+        party_size: parseInt(partySize, 10),
+        child_count: childCount ? parseInt(childCount, 10) : 0,
+        source: "kiosk",
       });
 
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "Could not join waitlist. Please try again.");
+      if (!result.ok || !result.entry) {
+        setError(result.error ?? "Could not join waitlist. Please try again.");
         return;
       }
 
       router.push(
-        `/kiosk/success?name=${encodeURIComponent(data.name)}&ticket=${encodeURIComponent(data.ticket_number)}`,
+        `/kiosk/success/?name=${encodeURIComponent(result.entry.name)}&ticket=${encodeURIComponent(result.entry.ticket_number)}`,
       );
     } catch {
       setError("Network error. Please try again.");
@@ -103,7 +100,7 @@ export default function KioskAddPage() {
         <button
           type="button"
           onClick={() =>
-            router.push(waitlistCount === 0 ? "/kiosk" : "/kiosk/join")
+            router.push(waitlistCount === 0 ? "/kiosk/" : "/kiosk/join/")
           }
           className="text-gray-500 hover:text-gray-700 text-lg"
         >

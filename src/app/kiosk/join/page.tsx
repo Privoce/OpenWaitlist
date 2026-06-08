@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { fetchActiveWaitlist, fetchSettings } from "@/lib/data-access";
 import { useInactivityTimeout } from "@/hooks/useInactivityTimeout";
 import { usePolling } from "@/hooks/usePolling";
 import type { WaitlistEntry } from "@/lib/types";
@@ -16,25 +17,23 @@ export default function KioskJoinPage() {
   const [settings, setSettings] = useState<{ restaurant_name: string; ticket_prefix: string } | null>(null);
 
   const fetchData = useCallback(async () => {
-    const [waitlistRes, settingsRes] = await Promise.all([
-      fetch("/api/waitlist"),
-      fetch("/api/settings"),
+    const [waitlist, s] = await Promise.all([
+      fetchActiveWaitlist(),
+      fetchSettings(),
     ]);
-    const waitlist = (await waitlistRes.json()) as WaitlistResponse;
-    const s = await settingsRes.json();
     setSettings(s);
-    return waitlist;
+    return waitlist as WaitlistResponse;
   }, []);
 
   const { data, loading } = usePolling(fetchData, 3000);
 
   useEffect(() => {
     if (!loading && data?.count === 0) {
-      router.replace("/kiosk/add");
+      router.replace("/kiosk/add/");
     }
   }, [loading, data, router]);
 
-  useInactivityTimeout(() => router.push("/kiosk"), 30_000);
+  useInactivityTimeout(() => router.push("/kiosk/"), 30_000);
 
   const entries = data?.entries ?? [];
   const count = data?.count ?? 0;
@@ -53,7 +52,7 @@ export default function KioskJoinPage() {
       <div className="px-6 pt-6">
         <button
           type="button"
-          onClick={() => router.push("/kiosk")}
+          onClick={() => router.push("/kiosk/")}
           className="flex items-center gap-1 text-gray-500 hover:text-gray-700 text-lg"
         >
           ← Back
@@ -87,7 +86,7 @@ export default function KioskJoinPage() {
       <div className="p-8 pb-12">
         <button
           type="button"
-          onClick={() => router.push("/kiosk/add")}
+          onClick={() => router.push("/kiosk/add/")}
           className="w-full rounded-full bg-brand-primary py-5 text-xl font-medium text-white shadow-lg active:scale-[0.99] transition-transform"
         >
           Add to waitlist

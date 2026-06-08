@@ -7,6 +7,11 @@ import { AddWaitlistModal } from "@/components/AddWaitlistModal";
 import { OpenWaitlistLogo } from "@/components/OpenWaitlistLogo";
 import { WaitlistCard } from "@/components/WaitlistCard";
 import { usePolling } from "@/hooks/usePolling";
+import {
+  createWaitlistEntry,
+  fetchAllEntries,
+  patchWaitlistStatus,
+} from "@/lib/data-access";
 import type { WaitlistEntry, WaitlistSource } from "@/lib/types";
 
 type Tab = "waitlist" | "seated" | "history";
@@ -21,10 +26,13 @@ function WaitlistPageContent() {
   const [showAddModal, setShowAddModal] = useState(false);
 
   const fetchData = useCallback(async () => {
-    const waitlistRes = await fetch(
-      "/api/waitlist?status=waiting,notified,checked_in,seated,cancelled",
-    );
-    const entries = (await waitlistRes.json()) as WaitlistEntry[];
+    const entries = await fetchAllEntries([
+      "waiting",
+      "notified",
+      "checked_in",
+      "seated",
+      "cancelled",
+    ]);
     return { entries };
   }, []);
 
@@ -85,11 +93,7 @@ function WaitlistPageContent() {
   };
 
   const updateStatus = async (id: string, status: WaitlistEntry["status"]) => {
-    await fetch(`/api/waitlist/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    });
+    await patchWaitlistStatus(id, status);
     refresh();
   };
 
@@ -106,11 +110,7 @@ function WaitlistPageContent() {
     notes: string;
     source: WaitlistSource;
   }) => {
-    await fetch("/api/waitlist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...formData, source: defaultSource }),
-    });
+    await createWaitlistEntry({ ...formData, source: defaultSource });
     setShowAddModal(false);
     refresh();
   };
