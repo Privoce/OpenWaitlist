@@ -16,16 +16,16 @@ export async function GET(request: Request) {
   const q = searchParams.get("q");
 
   if (q) {
-    return NextResponse.json(searchWaitlistEntries(q));
+    return NextResponse.json(await searchWaitlistEntries(q));
   }
 
   if (status) {
     const statuses = status.split(",") as WaitlistStatus[];
-    return NextResponse.json(listWaitlistEntries(statuses));
+    return NextResponse.json(await listWaitlistEntries(statuses));
   }
 
-  const entries = listWaitlistEntries(["waiting", "notified", "checked_in"]);
-  const count = getActiveWaitlistCount();
+  const entries = await listWaitlistEntries(["waiting", "notified", "checked_in"]);
+  const count = await getActiveWaitlistCount();
 
   return NextResponse.json({ entries, count });
 }
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const entry = createWaitlistEntry({
+  const entry = await createWaitlistEntry({
     name: body.name,
     phone: body.phone,
     party_size: Number(body.party_size),
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     source: body.source ?? "kiosk",
   });
 
-  const active = listWaitlistEntries(["waiting", "notified", "checked_in"]);
+  const active = await listWaitlistEntries(["waiting", "notified", "checked_in"]);
   const tablesAhead = Math.max(0, active.length - 1);
 
   void sendQueueConfirmation(entry, tablesAhead).catch((error) => {

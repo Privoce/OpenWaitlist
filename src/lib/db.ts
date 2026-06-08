@@ -1,49 +1,91 @@
+import { createClient, type Client } from "@libsql/client";
 import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
+import { SCHEMA_SQL, SEED_TABLES } from "./schema";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const DB_PATH = path.join(DATA_DIR, "openwaitlist.db");
 
-let db: Database.Database | null = null;
+let turso: Client | null = null;
+let sqlite: Database.Database | null = null;
+let initialized = false;
 
-function ensureDataDir() {
+export function useTurso() {
+  return Boolean(process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN);
+}
+
+function ensureSqliteDir() {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
 }
 
-function seedTables(database: Database.Database) {
+async function initTurso() {
+  if (turso) return turso;
+
+  turso = createClient({
+    url: process.env.TURSO_DATABASE_URL!,
+    authToken: process.env.TURSO_AUTH_TOKEN!,
+  });
+
+  const statements = SCHEMA_SQL.split(";")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  for (const sql of statements) {
+    await turso.execute(sql);
+  }
+
+  await seedTablesTurso(turso);
+  return turso;
+}
+
+async function seedTablesTurso(client: Client) {
+  const result = await client.execute("SELECT COUNT(*) AS count FROM tables");
+  const count = Number(result.rows[0]?.count ?? 0);
+  if (count > 0) return;
+
+  for (const table of SEED_TABLES) {
+    await client.execute({
+      sql: `INSERT INTO tables (id, label, shape, capacity, status, section, sort_order)
+            VALUES (?, ?, ?, ?, 'available', ?, ?)`,
+      args: [
+        crypto.randomUUID(),
+        table.label,
+        table.shape,
+        table.capacity,
+        table.section,
+        table.x,
+      ],
+    });
+  }
+}
+
+function initSqlite() {
+  if (sqlite) return sqlite;
+
+  ensureSqliteDir();
+  sqlite = new Database(DB_PATH);
+  sqlite.pragma("journal_mode = WAL");
+  sqlite.exec(SCHEMA_SQL);
+  seedTablesSqlite(sqlite);
+  return sqlite;
+}
+
+function seedTablesSqlite(database: Database.Database) {
   const count = database
     .prepare("SELECT COUNT(*) as count FROM tables")
     .get() as { count: number };
 
   if (count.count > 0) return;
 
-  const tables = [
-    { label: "A1", shape: "square", capacity: 2, section: "dining room", x: 0 },
-    { label: "A2", shape: "square", capacity: 2, section: "dining room", x: 1 },
-    { label: "A3", shape: "square", capacity: 4, section: "dining room", x: 2 },
-    { label: "A4", shape: "square", capacity: 4, section: "dining room", x: 3 },
-    { label: "B1", shape: "circle", capacity: 4, section: "dining room", x: 4 },
-    { label: "B2", shape: "circle", capacity: 6, section: "dining room", x: 5 },
-    { label: "C1", shape: "square", capacity: 2, section: "dining room", x: 6 },
-    { label: "C2", shape: "square", capacity: 2, section: "dining room", x: 7 },
-    { label: "C3", shape: "square", capacity: 4, section: "dining room", x: 8 },
-    { label: "C4", shape: "square", capacity: 4, section: "dining room", x: 9 },
-    { label: "D1", shape: "circle", capacity: 6, section: "dining room", x: 10 },
-    { label: "D2", shape: "circle", capacity: 8, section: "dining room", x: 11 },
-    { label: "V1", shape: "square", capacity: 2, section: "dining room", x: 12 },
-    { label: "V2", shape: "square", capacity: 2, section: "dining room", x: 13 },
-    { label: "V3", shape: "square", capacity: 4, section: "dining room", x: 14 },
-  ];
-
   const insert = database.prepare(`
     INSERT INTO tables (id, label, shape, capacity, status, section, sort_order)
     VALUES (?, ?, ?, ?, 'available', ?, ?)
   `);
 
-  for (const table of tables) {
+  for (const table of SEED_TABLES) {
     insert.run(
       crypto.randomUUID(),
       table.label,
@@ -55,54 +97,62 @@ function seedTables(database: Database.Database) {
   }
 }
 
-export function getDb(): Database.Database {
-  if (db) return db;
+export async function initDb() {
+  if (initialized) return;
+  if (useTurso()) {
+    await initTurso();
+  } else {
+    initSqlite();
+  }
+  initialized = true;
+}
 
-  ensureDataDir();
-  db = new Database(DB_PATH);
-  db.pragma("journal_mode = WAL");
+function tursoRowToRecord(row: Record<string, unknown>): Record<string, unknown> {
+  const record: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(row)) {
+    record[key] = value;
+  }
+  return record;
+}
 
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS settings (
-      id INTEGER PRIMARY KEY CHECK (id = 1),
-      restaurant_name TEXT NOT NULL DEFAULT 'My Restaurant',
-      ticket_prefix TEXT NOT NULL DEFAULT 'SE'
-    );
+export async function queryAll(
+  sql: string,
+  args: unknown[] = [],
+): Promise<Record<string, unknown>[]> {
+  await initDb();
 
-    CREATE TABLE IF NOT EXISTS waitlist_entries (
-      id TEXT PRIMARY KEY,
-      ticket_number TEXT NOT NULL UNIQUE,
-      name TEXT NOT NULL,
-      phone TEXT NOT NULL,
-      party_size INTEGER NOT NULL,
-      child_count INTEGER NOT NULL DEFAULT 0,
-      notes TEXT NOT NULL DEFAULT '',
-      status TEXT NOT NULL DEFAULT 'waiting',
-      source TEXT NOT NULL DEFAULT 'kiosk',
-      table_id TEXT,
-      created_at TEXT NOT NULL DEFAULT (datetime('now')),
-      notified_at TEXT,
-      checked_in_at TEXT,
-      seated_at TEXT
-    );
+  if (useTurso()) {
+    const result = await turso!.execute({ sql, args: args as never[] });
+    return result.rows.map((row) => tursoRowToRecord(row as Record<string, unknown>));
+  }
 
-    CREATE TABLE IF NOT EXISTS tables (
-      id TEXT PRIMARY KEY,
-      label TEXT NOT NULL UNIQUE,
-      shape TEXT NOT NULL DEFAULT 'square',
-      capacity INTEGER NOT NULL,
-      status TEXT NOT NULL DEFAULT 'available',
-      section TEXT NOT NULL DEFAULT 'dining room',
-      sort_order INTEGER NOT NULL DEFAULT 0,
-      occupied_at TEXT,
-      waitlist_entry_id TEXT
-    );
+  const rows = sqlite!.prepare(sql).all(...args) as Record<string, unknown>[];
+  return rows;
+}
 
-    INSERT OR IGNORE INTO settings (id, restaurant_name, ticket_prefix)
-    VALUES (1, 'My Restaurant', 'SE');
-  `);
+export async function queryOne(
+  sql: string,
+  args: unknown[] = [],
+): Promise<Record<string, unknown> | null> {
+  await initDb();
 
-  seedTables(db);
+  if (useTurso()) {
+    const result = await turso!.execute({ sql, args: args as never[] });
+    if (result.rows.length === 0) return null;
+    return tursoRowToRecord(result.rows[0] as Record<string, unknown>);
+  }
 
-  return db;
+  const row = sqlite!.prepare(sql).get(...args) as Record<string, unknown> | undefined;
+  return row ?? null;
+}
+
+export async function execute(sql: string, args: unknown[] = []) {
+  await initDb();
+
+  if (useTurso()) {
+    await turso!.execute({ sql, args: args as never[] });
+    return;
+  }
+
+  sqlite!.prepare(sql).run(...args);
 }

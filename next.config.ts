@@ -7,7 +7,8 @@ const nextConfig: NextConfig = {
   output: isGithubPages ? "export" : undefined,
   basePath,
   assetPrefix: isGithubPages ? `${basePath}/` : undefined,
-  trailingSlash: true,
+  trailingSlash: isGithubPages,
+  serverExternalPackages: ["better-sqlite3"],
   images: {
     unoptimized: true,
   },

@@ -28,16 +28,58 @@ Open [http://localhost:3000](http://localhost:3000)
 - Confirmation screen with auto-return countdown
 
 **Staff admin**
-- Dashboard with dine-in / call-in entry points
 - Waitlist sidebar with search and party-size filters
 - Notify, Check In, Seat, and Cancel actions
-- Visual floor plan with table timers
 - Add guests manually from staff side
 
 **Notifications (VoceChat)**
 - Messages go to your staff VoceChat inbox until SMS is configured
 - All messages go to VoceChat user `437225` — set `VOCECHAT_BOT_API_KEY` in `.env.local` (see `.env.example`)
 - Test: `curl -X POST http://localhost:3000/api/notifications/test`
+
+## Deploy on Vercel (recommended for production)
+
+Vercel runs the **full app** — API, database, and VoceChat notifications.
+
+### 1. Create a Turso database (free)
+
+Turso is serverless SQLite. Local file SQLite does not persist on Vercel.
+
+```bash
+# Install Turso CLI: https://docs.turso.tech/cli
+turso db create openwaitlist
+turso db show openwaitlist --url        # copy URL
+turso db tokens create openwaitlist     # copy token
+```
+
+### 2. Deploy to Vercel
+
+```bash
+npm i -g vercel
+cd openwaitlist
+vercel
+```
+
+Or connect **https://github.com/Privoce/OpenWaitlist** in the [Vercel dashboard](https://vercel.com/new).
+
+### 3. Add environment variables (Vercel → Settings → Environment Variables)
+
+| Variable | Value |
+|----------|-------|
+| `TURSO_DATABASE_URL` | `libsql://…` from Turso |
+| `TURSO_AUTH_TOKEN` | Turso auth token |
+| `VOCECHAT_BOT_API_KEY` | Your VoceChat bot key |
+| `VOCECHAT_BASE_URL` | `https://dev.voce.chat` (optional) |
+
+Redeploy after adding env vars. Your app will be at `https://your-project.vercel.app`.
+
+### Local vs Vercel
+
+| | Local `npm run dev` | Vercel |
+|--|--|--|
+| Database | SQLite file in `data/` | Turso (cloud) |
+| VoceChat | `.env.local` | Vercel env vars |
+| GitHub Pages | — | UI demo only (localStorage) |
 
 ## GitHub Pages
 
@@ -52,10 +94,11 @@ npm run dev
 
 ## Data
 
-SQLite database stored at `data/openwaitlist.db`. Floor plan tables are seeded on first run; the waitlist starts empty.
+- **Local:** SQLite file at `data/openwaitlist.db`
+- **Vercel:** Turso cloud database (when `TURSO_*` env vars are set)
 
 ## Tech stack
 
 - Next.js 16 (App Router)
 - Tailwind CSS
-- SQLite (better-sqlite3)
+- SQLite locally / Turso on Vercel

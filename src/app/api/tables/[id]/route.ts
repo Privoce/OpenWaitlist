@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const table = getTable(id);
+  const table = await getTable(id);
 
   if (!table) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -25,7 +25,7 @@ export async function PATCH(
   const body = await request.json();
 
   if (body.action === "release") {
-    const table = releaseTable(id);
+    const table = await releaseTable(id);
     if (!table) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }

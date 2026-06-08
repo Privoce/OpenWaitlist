@@ -11,7 +11,7 @@ export async function sendQueueConfirmation(
   entry: WaitlistEntry,
   tablesAhead: number,
 ) {
-  const { restaurant_name } = getSettings();
+  const { restaurant_name } = await getSettings();
   const message = `${restaurant_name}: Congrats ${entry.name}, you are on the queue! Your number is ${entry.ticket_number}, there are ${tablesAhead} tables waiting ahead. We will text you asap...`;
 
   try {
@@ -23,7 +23,7 @@ export async function sendQueueConfirmation(
 }
 
 export async function sendTableReadyNotification(entry: WaitlistEntry) {
-  const { restaurant_name } = getSettings();
+  const { restaurant_name } = await getSettings();
   const message = `${restaurant_name}: Hi ${entry.name}, it's your turn now! Please show the number ${entry.ticket_number} to the host when you have arrived. [powered by OpenWaitlist]`;
 
   try {
@@ -38,7 +38,7 @@ export async function sendStatusNotification(
   entry: WaitlistEntry,
   status: WaitlistStatus,
 ) {
-  const { restaurant_name } = getSettings();
+  const { restaurant_name } = await getSettings();
 
   const messages: Partial<Record<WaitlistStatus, string>> = {
     checked_in: `${restaurant_name}: ${entry.name} (${entry.ticket_number}) has checked in. Party of ${entry.party_size}. Phone: ${entry.phone}`,
@@ -58,7 +58,7 @@ export async function sendStatusNotification(
 }
 
 export async function sendTestNotification() {
-  const { restaurant_name } = getSettings();
+  const { restaurant_name } = await getSettings();
   const message = `${restaurant_name}: OpenWaitlist VoceChat test — notifications are working.`;
   return deliver(message);
 }

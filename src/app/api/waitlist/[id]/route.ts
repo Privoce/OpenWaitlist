@@ -10,7 +10,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const entry = getWaitlistEntry(id);
+  const entry = await getWaitlistEntry(id);
 
   if (!entry) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -31,7 +31,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Status is required" }, { status: 400 });
   }
 
-  const entry = updateWaitlistStatus(id, status, body.table_id);
+  const entry = await updateWaitlistStatus(id, status, body.table_id);
 
   if (!entry) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
