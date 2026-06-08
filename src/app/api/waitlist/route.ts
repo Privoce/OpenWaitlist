@@ -53,7 +53,7 @@ export async function POST(request: Request) {
   const tablesAhead = Math.max(0, active.length - 1);
 
   void sendQueueConfirmation(entry, tablesAhead).catch((error) => {
-    console.error("[VoceChat] Queue confirmation failed:", error);
+    console.error("[Telnyx] Queue confirmation failed:", error);
   });
 
   return NextResponse.json(entry, { status: 201 });

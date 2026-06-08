@@ -39,7 +39,7 @@ export async function PATCH(
 
   if (status === "notified") {
     void sendTableReadyNotification(entry).catch((error) => {
-      console.error("[VoceChat] Table ready notification failed:", error);
+      console.error("[Telnyx] Table ready notification failed:", error);
     });
   } else {
     void sendStatusNotification(entry, status).catch((error) => {
