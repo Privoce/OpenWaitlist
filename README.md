@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OpenWaitlist
 
-## Getting Started
+Open-source restaurant waitlist management — inspired by Chowbus. Runs locally as a web app with a **customer kiosk** and **staff admin** interface.
 
-First, run the development server:
+## Quick start
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Route | Purpose |
+|-------|---------|
+| `/` | Home — pick kiosk or admin |
+| `/kiosk` | Customer landing screen |
+| `/kiosk/join` | Live queue + join form |
+| `/admin` | Redirects to waitlist management |
+| `/admin/waitlist` | Staff waitlist management |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
+**Customer kiosk**
+- Tap-to-start landing screen
+- Live waitlist display (ticket number, name, party size)
+- Touch-friendly join form with numeric keypad
+- Confirmation screen with auto-return countdown
 
-To learn more about Next.js, take a look at the following resources:
+**Staff admin**
+- Dashboard with dine-in / call-in entry points
+- Waitlist sidebar with search and party-size filters
+- Notify, Check In, Seat, and Cancel actions
+- Visual floor plan with table timers
+- Add guests manually from staff side
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Notifications (VoceChat)**
+- Messages go to your staff VoceChat inbox until SMS is configured
+- All messages go to VoceChat user `437225` — set `VOCECHAT_BOT_API_KEY` in `.env.local` (see `.env.example`)
+- Test: `curl -X POST http://localhost:3000/api/notifications/test`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Data
 
-## Deploy on Vercel
+SQLite database stored at `data/openwaitlist.db`. Floor plan tables are seeded on first run; the waitlist starts empty.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tech stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Next.js 16 (App Router)
+- Tailwind CSS
+- SQLite (better-sqlite3)
