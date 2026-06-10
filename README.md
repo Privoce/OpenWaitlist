@@ -13,7 +13,7 @@ Open [http://localhost:3000](http://localhost:3000)
 
 | Route | Purpose |
 |-------|---------|
-| `/` | Home — pick kiosk or admin |
+| `/` | Marketing landing page |
 | `/kiosk` | Customer landing screen |
 | `/kiosk/join` | Live queue + join form |
 | `/admin` | Redirects to waitlist management |
@@ -87,14 +87,11 @@ Redeploy after adding env vars. Your app will be at `https://your-project.vercel
 
 ## GitHub Pages
 
-Live demo: https://privoce.github.io/OpenWaitlist/
+Landing page + interactive demo: https://privoce.github.io/OpenWaitlist/
 
-The GitHub Pages build runs in the browser with localStorage (no server). VoceChat notifications are not available on Pages — run locally for full features:
+Future custom domain: **openwaitlist.privoce.com** (CNAME file included — add the domain in GitHub repo Settings → Pages, then point DNS to GitHub).
 
-```bash
-cp .env.example .env.local   # add VoceChat key
-npm run dev
-```
+The GitHub Pages build runs in the browser with localStorage (no server). SMS and VoceChat are not available on Pages — use the [Vercel deployment](https://openwaitlist.vercel.app) for full features.
 
 ## Data
 
