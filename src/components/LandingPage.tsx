@@ -255,6 +255,12 @@ export function LandingPage() {
             >
               Privoce
             </a>
+            <Link href="/privacy/" className="text-brand-dark/70 hover:text-brand-primary">
+              Privacy
+            </Link>
+            <Link href="/terms/" className="text-brand-dark/70 hover:text-brand-primary">
+              Terms
+            </Link>
           </div>
         </div>
       </footer>
