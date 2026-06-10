@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const isGithubPages = process.env.GITHUB_PAGES === "true";
-const basePath = isGithubPages ? "/OpenWaitlist" : "";
+// Custom domain (openwaitlist.privoce.com) serves from /. Use /OpenWaitlist only for github.io/project URLs.
+const basePath = isGithubPages
+  ? (process.env.GITHUB_PAGES_BASE_PATH ?? "")
+  : "";
 
 const nextConfig: NextConfig = {
   output: isGithubPages ? "export" : undefined,

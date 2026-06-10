@@ -34,6 +34,7 @@ jobs:
         run: npm run build
         env:
           GITHUB_PAGES: "true"
+          GITHUB_PAGES_BASE_PATH: ""
 
       - name: Disable Jekyll processing
         run: touch out/.nojekyll

@@ -87,7 +87,7 @@ Redeploy after adding env vars. Your app will be at `https://your-project.vercel
 
 ## GitHub Pages
 
-Landing page + interactive demo: https://privoce.github.io/OpenWaitlist/
+Landing page + interactive demo: https://openwaitlist.privoce.com (after Pages is enabled)
 
 ### First-time setup (required)
 
