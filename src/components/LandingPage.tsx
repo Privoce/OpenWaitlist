@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { OpenWaitlistLogo } from "@/components/OpenWaitlistLogo";
-import { CONTACT_EMAIL, GITHUB_REPO_URL, LIVE_APP_URL, SITE_DOMAIN } from "@/lib/site";
+import { CALENDLY_URL, GITHUB_REPO_URL, LIVE_APP_URL, SITE_DOMAIN } from "@/lib/site";
 
 const features = [
   {
@@ -83,16 +83,16 @@ export function LandingPage() {
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-brand-dark/70 sm:text-xl">
               OpenWaitlist is a free, self-hostable waitlist app for restaurants — customer
-              kiosk, staff dashboard, and SMS alerts. Free to start on your own, or let{" "}
+              kiosk, staff dashboard, and SMS alerts. Free to start on your own, or{" "}
               <a
-                href="https://privoce.com"
+                href={CALENDLY_URL}
                 className="font-medium text-brand-primary hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Privoce
+                let Privoce handle
               </a>{" "}
-              handle on-premise deployment for you.
+              on-premise deployment for you.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
@@ -124,10 +124,12 @@ export function LandingPage() {
               </a>{" "}
               with database and SMS available on Vercel. For on-premise setup,{" "}
               <a
-                href={`mailto:${CONTACT_EMAIL}`}
+                href={CALENDLY_URL}
                 className="text-brand-primary hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                contact {CONTACT_EMAIL}
+                book a call with Privoce
               </a>
               .
             </p>
@@ -188,16 +190,23 @@ export function LandingPage() {
                 Open kiosk demo
               </Link>
               <a
-                href={`mailto:${CONTACT_EMAIL}?subject=OpenWaitlist%20on-premise`}
+                href={CALENDLY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-full border border-white/30 px-8 py-3.5 font-semibold text-white hover:bg-white/10 transition-colors"
               >
-                Contact us
+                Let Privoce handle
               </a>
             </div>
             <p className="mt-5 text-sm text-white/70">
-              On-premise service:{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-white hover:underline">
-                {CONTACT_EMAIL}
+              On-premise setup and support —{" "}
+              <a
+                href={CALENDLY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white hover:underline"
+              >
+                schedule a meeting
               </a>
             </p>
           </div>
@@ -231,10 +240,12 @@ export function LandingPage() {
               Live app
             </a>
             <a
-              href={`mailto:${CONTACT_EMAIL}`}
+              href={CALENDLY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-brand-dark/70 hover:text-brand-primary"
             >
-              Contact
+              Book a call
             </a>
             <a
               href="https://privoce.com"
