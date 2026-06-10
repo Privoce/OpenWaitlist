@@ -49,10 +49,7 @@ export async function POST(request: Request) {
     source: body.source ?? "kiosk",
   });
 
-  const active = await listWaitlistEntries(["waiting", "notified", "checked_in"]);
-  const tablesAhead = Math.max(0, active.length - 1);
-
-  void sendQueueConfirmation(entry, tablesAhead).catch((error) => {
+  void sendQueueConfirmation(entry).catch((error) => {
     console.error("[Telnyx] Queue confirmation failed:", error);
   });
 
