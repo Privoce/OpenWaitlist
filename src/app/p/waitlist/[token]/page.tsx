@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SAMPLE_WAITLIST_TOKEN } from "@/lib/demo-progress";
 import { WaitlistProgressView } from "@/components/WaitlistProgressView";
 
 export const metadata: Metadata = {
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export function generateStaticParams() {
-  return [{ token: "preview" }];
+  return [{ token: SAMPLE_WAITLIST_TOKEN }];
 }
 
 export default async function WaitlistProgressPage({

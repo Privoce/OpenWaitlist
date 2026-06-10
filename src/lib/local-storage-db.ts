@@ -1,3 +1,4 @@
+import { getSampleWaitlistProgress, isSampleWaitlistToken } from "./demo-progress";
 import { formatWaitTime } from "./format";
 import { generatePublicToken } from "./public-url";
 import type {
@@ -157,6 +158,10 @@ function progressMessage(status: WaitlistStatus) {
 }
 
 export function getLocalWaitlistProgress(token: string): WaitlistProgress | null {
+  if (isSampleWaitlistToken(token)) {
+    return getSampleWaitlistProgress();
+  }
+
   const entries = readEntries();
   const entry = entries.find((item) => item.public_token === token);
   if (!entry) return null;

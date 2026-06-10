@@ -1,3 +1,4 @@
+import { getSampleWaitlistProgress, isSampleWaitlistToken } from "./demo-progress";
 import { execute, queryAll, queryOne } from "./db";
 import { formatWaitTime } from "./format";
 import { generatePublicToken } from "./public-url";
@@ -140,6 +141,10 @@ function progressMessage(status: WaitlistStatus) {
 export async function getWaitlistProgress(
   token: string,
 ): Promise<WaitlistProgress | null> {
+  if (isSampleWaitlistToken(token)) {
+    return getSampleWaitlistProgress();
+  }
+
   const entry = await getWaitlistEntryByToken(token);
   if (!entry) return null;
 

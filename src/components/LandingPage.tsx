@@ -1,6 +1,14 @@
 import Link from "next/link";
 import { OpenWaitlistLogo } from "@/components/OpenWaitlistLogo";
-import { CALENDLY_URL, GITHUB_REPO_URL, LIVE_APP_URL, SITE_DOMAIN } from "@/lib/site";
+import {
+  CALENDLY_URL,
+  GITHUB_REPO_URL,
+  LIVE_APP_URL,
+  SAMPLE_WAITLIST_URL,
+  SITE_DOMAIN,
+} from "@/lib/site";
+import { CopySampleLinkButton } from "@/components/CopySampleLinkButton";
+import { SAMPLE_WAITLIST_TOKEN } from "@/lib/demo-progress";
 
 const features = [
   {
@@ -14,9 +22,9 @@ const features = [
       "Search, filter, and manage the queue. Notify guests, check them in, seat parties, or cancel.",
   },
   {
-    title: "SMS notifications",
+    title: "SMS & progress links",
     description:
-      "Automatic texts when guests join and when their table is ready, powered by Telnyx.",
+      "Guests get a text with a private link to check their place in line, plus a ping when their table is ready.",
   },
   {
     title: "Free to start",
@@ -154,6 +162,50 @@ export function LandingPage() {
                   <p className="mt-2 leading-relaxed text-brand-dark/70">{feature.description}</p>
                 </article>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="px-6 py-20 bg-white border-y border-brand-gold-light">
+          <div className="mx-auto max-w-6xl">
+            <h2 className="text-3xl font-semibold tracking-tight">
+              Guest progress link
+            </h2>
+            <p className="mt-3 max-w-2xl text-brand-dark/70">
+              Every guest gets a private link to check their place in line — sent by SMS
+              or shown after they join. Share it, text it, or embed it on your site.
+            </p>
+
+            <div className="mt-8 rounded-2xl border border-brand-gold-light bg-[#fffaf5] p-5 sm:p-6">
+              <p className="text-sm font-medium text-brand-dark/60">Sample link</p>
+              <a
+                href={SAMPLE_WAITLIST_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 block break-all font-mono text-sm text-brand-primary hover:underline sm:text-base"
+              >
+                {SAMPLE_WAITLIST_URL}
+              </a>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href={`/p/waitlist/${SAMPLE_WAITLIST_TOKEN}/`}
+                  className="rounded-full bg-brand-primary px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-primary-dark transition-colors"
+                >
+                  Open sample
+                </Link>
+                <CopySampleLinkButton url={SAMPLE_WAITLIST_URL} />
+              </div>
+            </div>
+
+            <div className="mt-8 overflow-hidden rounded-2xl border border-brand-gold-light bg-white shadow-sm">
+              <div className="border-b border-brand-gold-light px-4 py-3 text-sm text-brand-dark/60">
+                Live preview
+              </div>
+              <iframe
+                title="Waitlist progress sample"
+                src={`/p/waitlist/${SAMPLE_WAITLIST_TOKEN}/`}
+                className="h-[520px] w-full border-0 bg-brand-gold-light/20"
+              />
             </div>
           </div>
         </section>
