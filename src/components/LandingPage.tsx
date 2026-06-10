@@ -129,7 +129,7 @@ export function LandingPage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                contact us
+                book a call
               </a>
               .
             </p>
@@ -195,7 +195,7 @@ export function LandingPage() {
                 rel="noopener noreferrer"
                 className="rounded-full border border-white/30 px-8 py-3.5 font-semibold text-white hover:bg-white/10 transition-colors"
               >
-                Contact us
+                Book a call
               </a>
             </div>
             <p className="mt-5 text-sm text-white/70">
@@ -206,7 +206,7 @@ export function LandingPage() {
                 rel="noopener noreferrer"
                 className="text-white hover:underline"
               >
-                contact us
+                book a call
               </a>
             </p>
           </div>
@@ -245,7 +245,7 @@ export function LandingPage() {
               rel="noopener noreferrer"
               className="text-brand-dark/70 hover:text-brand-primary"
             >
-              Contact us
+              Book a call
             </a>
             <a
               href="https://privoce.com"
