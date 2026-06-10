@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { OpenWaitlistLogo } from "@/components/OpenWaitlistLogo";
-import { GITHUB_REPO_URL, LIVE_APP_URL, SITE_DOMAIN } from "@/lib/site";
+import { CONTACT_EMAIL, GITHUB_REPO_URL, LIVE_APP_URL, SITE_DOMAIN } from "@/lib/site";
 
 const features = [
   {
@@ -19,9 +19,9 @@ const features = [
       "Automatic texts when guests join and when their table is ready, powered by Telnyx.",
   },
   {
-    title: "Open source",
+    title: "Free to start",
     description:
-      "Self-host on Vercel with Turso, or run locally. No vendor lock-in, full control of your data.",
+      "Deploy yourself on Vercel or run locally at no cost. Need help? Privoce offers on-premise setup and support.",
   },
 ];
 
@@ -75,7 +75,7 @@ export function LandingPage() {
 
           <div className="relative mx-auto max-w-6xl">
             <p className="mb-4 inline-flex rounded-full border border-brand-primary/20 bg-brand-gold-light/50 px-4 py-1 text-sm font-medium text-brand-primary">
-              Open source · Restaurant waitlist
+              Free to start · On-premise available
             </p>
             <h1 className="max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
               Waitlist management that{" "}
@@ -83,7 +83,7 @@ export function LandingPage() {
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-brand-dark/70 sm:text-xl">
               OpenWaitlist is a free, self-hostable waitlist app for restaurants — customer
-              kiosk, staff dashboard, and SMS alerts. Built by{" "}
+              kiosk, staff dashboard, and SMS alerts. Free to start on your own, or let{" "}
               <a
                 href="https://privoce.com"
                 className="font-medium text-brand-primary hover:underline"
@@ -91,8 +91,8 @@ export function LandingPage() {
                 rel="noopener noreferrer"
               >
                 Privoce
-              </a>
-              .
+              </a>{" "}
+              handle on-premise deployment for you.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
@@ -122,7 +122,14 @@ export function LandingPage() {
               >
                 Full deployment
               </a>{" "}
-              with database and SMS available on Vercel.
+              with database and SMS available on Vercel. For on-premise setup,{" "}
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="text-brand-primary hover:underline"
+              >
+                contact {CONTACT_EMAIL}
+              </a>
+              .
             </p>
           </div>
         </section>
@@ -131,7 +138,8 @@ export function LandingPage() {
           <div className="mx-auto max-w-6xl">
             <h2 className="text-3xl font-semibold tracking-tight">Everything you need</h2>
             <p className="mt-3 max-w-2xl text-brand-dark/70">
-              From the host stand to the guest&apos;s phone — one simple stack, no monthly SaaS fee.
+              From the host stand to the guest&apos;s phone — free to start, with optional
+              on-premise service from Privoce.
             </p>
 
             <div className="mt-12 grid gap-6 sm:grid-cols-2">
@@ -167,10 +175,10 @@ export function LandingPage() {
 
         <section className="px-6 pb-20">
           <div className="mx-auto max-w-6xl rounded-3xl bg-brand-primary px-8 py-12 text-white sm:px-12 sm:py-16">
-            <h2 className="text-3xl font-semibold tracking-tight">Ready to try it?</h2>
+            <h2 className="text-3xl font-semibold tracking-tight">Ready to get started?</h2>
             <p className="mt-4 max-w-xl text-white/85">
-              Explore the kiosk and staff admin in your browser, or deploy your own instance in
-              minutes with Vercel and Turso.
+              Try the demo in your browser, deploy on your own for free, or reach out for
+              on-premise installation and support.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
@@ -179,13 +187,19 @@ export function LandingPage() {
               >
                 Open kiosk demo
               </Link>
-              <Link
-                href="/admin/waitlist/"
+              <a
+                href={`mailto:${CONTACT_EMAIL}?subject=OpenWaitlist%20on-premise`}
                 className="rounded-full border border-white/30 px-8 py-3.5 font-semibold text-white hover:bg-white/10 transition-colors"
               >
-                Open staff admin
-              </Link>
+                Contact us
+              </a>
             </div>
+            <p className="mt-5 text-sm text-white/70">
+              On-premise service:{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-white hover:underline">
+                {CONTACT_EMAIL}
+              </a>
+            </p>
           </div>
         </section>
       </main>
@@ -215,6 +229,12 @@ export function LandingPage() {
               className="text-brand-dark/70 hover:text-brand-primary"
             >
               Live app
+            </a>
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="text-brand-dark/70 hover:text-brand-primary"
+            >
+              Contact
             </a>
             <a
               href="https://privoce.com"
