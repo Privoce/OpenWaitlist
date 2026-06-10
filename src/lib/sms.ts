@@ -21,7 +21,7 @@ async function deliverToStaff(message: string) {
 export async function sendQueueConfirmation(entry: WaitlistEntry) {
   const { restaurant_name } = await getSettings();
   const progressUrl = waitlistProgressUrl(entry.public_token);
-  const message = `${restaurant_name}: You've been added to the ${restaurant_name} waitlist. Your number is ${entry.ticket_number}. Check your place in line here: ${progressUrl} Reply STOP to cancel.`;
+  const message = `${restaurant_name}: You've been added to the ${restaurant_name} waitlist. Your number is ${entry.ticket_number}. Check your place in line here: ${progressUrl} Reply HELP for help. Reply STOP to cancel.`;
 
   try {
     return await deliverToCustomer(entry, message);
@@ -38,7 +38,7 @@ export async function sendQueueConfirmation(entry: WaitlistEntry) {
 
 export async function sendTableReadyNotification(entry: WaitlistEntry) {
   const { restaurant_name } = await getSettings();
-  const message = `${restaurant_name}: Hi ${entry.name}, it's your turn now! Please show the number ${entry.ticket_number} to the host when you have arrived. [powered by OpenWaitlist]`;
+  const message = `${restaurant_name}: Hi ${entry.name}, it's your turn now! Please show the number ${entry.ticket_number} to the host when you have arrived. Reply HELP for help. Reply STOP to cancel.`;
 
   try {
     return await deliverToCustomer(entry, message);

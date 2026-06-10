@@ -1,13 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { formatPhone } from "@/lib/format";
 import {
   createWaitlistEntry,
+  fetchSettings,
   fetchWaitlistCount,
 } from "@/lib/data-access";
+import { formatPhone } from "@/lib/format";
 import { useInactivityTimeout } from "@/hooks/useInactivityTimeout";
+import { PRIVACY_URL, TERMS_URL, smsOptInLabel } from "@/lib/sms-consent";
 
 export default function KioskAddPage() {
   const router = useRouter();
@@ -15,13 +18,16 @@ export default function KioskAddPage() {
   const [phone, setPhone] = useState("");
   const [partySize, setPartySize] = useState("");
   const [childCount, setChildCount] = useState("");
-  const [activeField, setActiveField] = useState<"phone" | "party" | "child">("phone");
+  const [smsOptIn, setSmsOptIn] = useState(false);
+  const [restaurantName, setRestaurantName] = useState("My Restaurant");
+  const [activeField, setActiveField] = useState<"phone" | "party" | "child">("party");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [waitlistCount, setWaitlistCount] = useState<number | null>(null);
 
   useEffect(() => {
     fetchWaitlistCount().then(setWaitlistCount);
+    fetchSettings().then((settings) => setRestaurantName(settings.restaurant_name));
   }, []);
 
   useInactivityTimeout(() => router.push("/kiosk/"), 60_000);
@@ -56,14 +62,14 @@ export default function KioskAddPage() {
       setError("Please enter your name.");
       return;
     }
-    if (phone.replace(/\D/g, "").length < 10) {
-      setError("Please enter a 10-digit phone number.");
-      setActiveField("phone");
-      return;
-    }
     if (!partySize || parseInt(partySize, 10) < 1) {
       setError("Please enter your party size.");
       setActiveField("party");
+      return;
+    }
+    if (smsOptIn && phone.replace(/\D/g, "").length < 10) {
+      setError("Enter a 10-digit phone number to receive SMS updates.");
+      setActiveField("phone");
       return;
     }
 
@@ -71,10 +77,11 @@ export default function KioskAddPage() {
     try {
       const result = await createWaitlistEntry({
         name: name.trim(),
-        phone,
+        phone: smsOptIn ? phone : "",
         party_size: parseInt(partySize, 10),
         child_count: childCount ? parseInt(childCount, 10) : 0,
         source: "kiosk",
+        sms_opt_in: smsOptIn,
       });
 
       if (!result.ok || !result.entry) {
@@ -83,7 +90,7 @@ export default function KioskAddPage() {
       }
 
       router.push(
-        `/kiosk/success/?name=${encodeURIComponent(result.entry.name)}&ticket=${encodeURIComponent(result.entry.ticket_number)}&token=${encodeURIComponent(result.entry.public_token)}`,
+        `/kiosk/success/?name=${encodeURIComponent(result.entry.name)}&ticket=${encodeURIComponent(result.entry.ticket_number)}&token=${encodeURIComponent(result.entry.public_token)}&sms=${result.entry.sms_opt_in ? "1" : "0"}`,
       );
     } catch {
       setError("Network error. Please try again.");
@@ -110,6 +117,7 @@ export default function KioskAddPage() {
 
       <div className="px-6 pt-2 pb-4">
         <h1 className="text-2xl font-semibold text-gray-900">Add to waitlist</h1>
+        <p className="mt-1 text-sm text-gray-500">{restaurantName}</p>
       </div>
 
       <div className="px-6 space-y-5 flex-1 overflow-y-auto">
@@ -127,19 +135,39 @@ export default function KioskAddPage() {
         </div>
 
         <div>
-          <label className="text-sm text-gray-500">
-            Phone number<span className="text-brand-primary">*</span>
-          </label>
+          <label className="text-sm text-gray-500">Phone number (optional)</label>
           <button
             type="button"
             onClick={() => setActiveField("phone")}
             className={`mt-1 w-full border-b py-3 text-xl text-left outline-none ${
               activeField === "phone" ? "border-brand-primary" : "border-gray-200"
-            }`}
+            } ${!smsOptIn ? "text-gray-400" : ""}`}
           >
-            {phone || "Tap below to enter phone"}
+            {phone || "Only needed if you opt in to SMS below"}
           </button>
         </div>
+
+        <label className="flex items-start gap-3 rounded-xl border border-brand-gold-light bg-brand-gold-light/20 p-4 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={smsOptIn}
+            onChange={(e) => {
+              setSmsOptIn(e.target.checked);
+              if (e.target.checked) setActiveField("phone");
+            }}
+            className="mt-1 h-5 w-5 shrink-0 accent-brand-primary"
+          />
+          <span className="text-sm leading-relaxed text-brand-dark/80">
+            {smsOptInLabel(restaurantName)}{" "}
+            <Link href={PRIVACY_URL} className="text-brand-primary underline">
+              Privacy Policy
+            </Link>
+            {" · "}
+            <Link href={TERMS_URL} className="text-brand-primary underline">
+              Terms
+            </Link>
+          </span>
+        </label>
 
         <div className="flex gap-6">
           <div className="flex-1">

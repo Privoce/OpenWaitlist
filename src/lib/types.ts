@@ -34,6 +34,7 @@ export interface WaitlistEntry {
   ticket_number: string;
   name: string;
   phone: string;
+  sms_opt_in: boolean;
   party_size: number;
   child_count: number;
   notes: string;
@@ -64,9 +65,10 @@ export interface Settings {
 
 export interface CreateWaitlistInput {
   name: string;
-  phone: string;
+  phone?: string;
   party_size: number;
   child_count?: number;
   notes?: string;
   source?: WaitlistSource;
+  sms_opt_in?: boolean;
 }

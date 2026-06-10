@@ -11,6 +11,7 @@ function SuccessContent() {
   const name = params.get("name") ?? "Guest";
   const ticket = params.get("ticket") ?? "---";
   const token = params.get("token");
+  const smsOptIn = params.get("sms") === "1";
   const [countdown, setCountdown] = useState(5);
 
   useEffect(() => {
@@ -59,11 +60,12 @@ function SuccessContent() {
           >
             Check your place in line
           </Link>
-        ) : (
-          <p className="text-white text-sm mt-5 mb-4 text-center">
-            We will text you when a table is ready
-          </p>
-        )}
+        ) : null}
+        <p className="text-white text-sm mt-2 mb-4 text-center">
+          {smsOptIn
+            ? "We will text you when a table is ready"
+            : "Show your ticket number to the host when your table is ready"}
+        </p>
         <PoweredBy />
       </div>
     </div>

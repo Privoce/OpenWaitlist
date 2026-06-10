@@ -37,7 +37,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  if (status === "notified") {
+  if (status === "notified" && entry.sms_opt_in && entry.phone) {
     void sendTableReadyNotification(entry).catch((error) => {
       console.error("[Telnyx] Table ready notification failed:", error);
     });

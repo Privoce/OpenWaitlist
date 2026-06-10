@@ -110,7 +110,11 @@ function WaitlistPageContent() {
     notes: string;
     source: WaitlistSource;
   }) => {
-    await createWaitlistEntry({ ...formData, source: defaultSource });
+    await createWaitlistEntry({
+      ...formData,
+      source: defaultSource,
+      sms_opt_in: Boolean(formData.phone?.trim()),
+    });
     setShowAddModal(false);
     refresh();
   };

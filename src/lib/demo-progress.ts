@@ -4,7 +4,7 @@ export const SAMPLE_WAITLIST_TOKEN = "aBc12XyZ9k";
 
 export function getSampleWaitlistProgress(): WaitlistProgress {
   return {
-    restaurant_name: "Cajun Kitchen",
+    restaurant_name: "My Restaurant",
     ticket_number: "SE01",
     guest_name: "Jane",
     party_size: 2,

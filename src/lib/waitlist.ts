@@ -18,6 +18,7 @@ function rowToEntry(row: Record<string, unknown>): WaitlistEntry {
     ticket_number: row.ticket_number as string,
     name: row.name as string,
     phone: row.phone as string,
+    sms_opt_in: Boolean(row.sms_opt_in),
     party_size: Number(row.party_size),
     child_count: Number(row.child_count),
     notes: row.notes as string,
@@ -173,16 +174,20 @@ export async function createWaitlistEntry(
   const ticket_number = await nextTicketNumber();
   const public_token = generatePublicToken();
 
+  const smsOptIn = Boolean(input.sms_opt_in);
+  const phone = smsOptIn ? (input.phone?.trim() ?? "") : "";
+
   await execute(
     `INSERT INTO waitlist_entries (
-      id, public_token, ticket_number, name, phone, party_size, child_count, notes, status, source
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'waiting', ?)`,
+      id, public_token, ticket_number, name, phone, sms_opt_in, party_size, child_count, notes, status, source
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'waiting', ?)`,
     [
       id,
       public_token,
       ticket_number,
       input.name.trim(),
-      input.phone.trim(),
+      phone,
+      smsOptIn ? 1 : 0,
       input.party_size,
       input.child_count ?? 0,
       input.notes?.trim() ?? "",

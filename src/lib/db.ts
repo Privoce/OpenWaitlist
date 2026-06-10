@@ -144,6 +144,18 @@ export async function initDb() {
   }
   dbReady = true;
   await migratePublicTokens();
+  await migrateSmsOptIn();
+}
+
+async function migrateSmsOptIn() {
+  const columns = await queryAll("PRAGMA table_info(waitlist_entries)");
+  const hasSmsOptIn = columns.some((column) => column.name === "sms_opt_in");
+
+  if (!hasSmsOptIn) {
+    await execute(
+      "ALTER TABLE waitlist_entries ADD COLUMN sms_opt_in INTEGER NOT NULL DEFAULT 0",
+    );
+  }
 }
 
 function tursoRowToRecord(row: Record<string, unknown>): Record<string, unknown> {
