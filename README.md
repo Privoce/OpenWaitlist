@@ -89,7 +89,17 @@ Redeploy after adding env vars. Your app will be at `https://your-project.vercel
 
 Landing page + interactive demo: https://privoce.github.io/OpenWaitlist/
 
-Future custom domain: **openwaitlist.privoce.com** (CNAME file included — add the domain in GitHub repo Settings → Pages, then point DNS to GitHub).
+### First-time setup (required)
+
+GitHub Pages must be enabled once or deploys will fail with a 404:
+
+1. Open [Settings → Pages](https://github.com/Privoce/OpenWaitlist/settings/pages)
+2. Set **Source** to **GitHub Actions**
+3. Re-run **Actions → Deploy GitHub Pages** (or push to `main`)
+
+See [.github/ENABLE-PAGES.md](.github/ENABLE-PAGES.md) for details and custom domain setup.
+
+Future custom domain: **openwaitlist.privoce.com** (CNAME file included — add the domain in GitHub Pages settings, then point DNS to GitHub).
 
 The GitHub Pages build runs in the browser with localStorage (no server). SMS and VoceChat are not available on Pages — use the [Vercel deployment](https://openwaitlist.vercel.app) for full features.
 
