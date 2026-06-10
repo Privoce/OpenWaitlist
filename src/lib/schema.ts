@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS settings (
 
 CREATE TABLE IF NOT EXISTS waitlist_entries (
   id TEXT PRIMARY KEY,
+  public_token TEXT UNIQUE,
   ticket_number TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
   phone TEXT NOT NULL,

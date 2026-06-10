@@ -1,15 +1,19 @@
 import { execute, queryAll, queryOne } from "./db";
+import { formatWaitTime } from "./format";
+import { generatePublicToken } from "./public-url";
 import type {
   CreateWaitlistInput,
   Settings,
   Table,
   WaitlistEntry,
+  WaitlistProgress,
   WaitlistStatus,
 } from "./types";
 
 function rowToEntry(row: Record<string, unknown>): WaitlistEntry {
   return {
     id: row.id as string,
+    public_token: row.public_token as string,
     ticket_number: row.ticket_number as string,
     name: row.name as string,
     phone: row.phone as string,
@@ -102,18 +106,75 @@ export async function getWaitlistEntry(id: string): Promise<WaitlistEntry | null
   return row ? rowToEntry(row) : null;
 }
 
+export async function getWaitlistEntryByToken(
+  token: string,
+): Promise<WaitlistEntry | null> {
+  const row = await queryOne(
+    "SELECT * FROM waitlist_entries WHERE public_token = ?",
+    [token],
+  );
+  return row ? rowToEntry(row) : null;
+}
+
+function firstName(name: string) {
+  return name.trim().split(/\s+/)[0] || "Guest";
+}
+
+function progressMessage(status: WaitlistStatus) {
+  switch (status) {
+    case "waiting":
+      return "You're on the waitlist";
+    case "notified":
+      return "Your table is ready!";
+    case "checked_in":
+      return "You're checked in";
+    case "seated":
+      return "You've been seated";
+    case "cancelled":
+      return "Removed from the waitlist";
+    default:
+      return "Waitlist update";
+  }
+}
+
+export async function getWaitlistProgress(
+  token: string,
+): Promise<WaitlistProgress | null> {
+  const entry = await getWaitlistEntryByToken(token);
+  if (!entry) return null;
+
+  const { restaurant_name } = await getSettings();
+  const active = await listWaitlistEntries(["waiting", "notified", "checked_in"]);
+  const index = active.findIndex((item) => item.id === entry.id);
+  const isActive = index >= 0;
+
+  return {
+    restaurant_name,
+    ticket_number: entry.ticket_number,
+    guest_name: firstName(entry.name),
+    party_size: entry.party_size,
+    status: entry.status,
+    position: isActive ? index + 1 : null,
+    parties_ahead: isActive ? index : 0,
+    status_message: progressMessage(entry.status),
+    wait_time: formatWaitTime(entry.created_at),
+  };
+}
+
 export async function createWaitlistEntry(
   input: CreateWaitlistInput,
 ): Promise<WaitlistEntry> {
   const id = crypto.randomUUID();
   const ticket_number = await nextTicketNumber();
+  const public_token = generatePublicToken();
 
   await execute(
     `INSERT INTO waitlist_entries (
-      id, ticket_number, name, phone, party_size, child_count, notes, status, source
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, 'waiting', ?)`,
+      id, public_token, ticket_number, name, phone, party_size, child_count, notes, status, source
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'waiting', ?)`,
     [
       id,
+      public_token,
       ticket_number,
       input.name.trim(),
       input.phone.trim(),

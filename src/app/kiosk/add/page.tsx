@@ -83,7 +83,7 @@ export default function KioskAddPage() {
       }
 
       router.push(
-        `/kiosk/success/?name=${encodeURIComponent(result.entry.name)}&ticket=${encodeURIComponent(result.entry.ticket_number)}`,
+        `/kiosk/success/?name=${encodeURIComponent(result.entry.name)}&ticket=${encodeURIComponent(result.entry.ticket_number)}&token=${encodeURIComponent(result.entry.public_token)}`,
       );
     } catch {
       setError("Network error. Please try again.");

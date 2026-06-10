@@ -3,6 +3,7 @@ import {
   getLocalActiveCount,
   getLocalSettings,
   getLocalWaitlist,
+  getLocalWaitlistProgress,
   listLocalEntries,
   updateLocalStatus,
 } from "./local-storage-db";
@@ -10,6 +11,7 @@ import type {
   CreateWaitlistInput,
   Settings,
   WaitlistEntry,
+  WaitlistProgress,
   WaitlistStatus,
 } from "./types";
 
@@ -83,4 +85,14 @@ export async function fetchWaitlistCount(): Promise<number> {
   const res = await fetch(apiUrl("/api/waitlist"));
   const data = await res.json();
   return data.count ?? 0;
+}
+
+export async function fetchWaitlistProgress(
+  token: string,
+): Promise<WaitlistProgress | null> {
+  if (isStaticExport) return getLocalWaitlistProgress(token);
+
+  const res = await fetch(apiUrl(`/api/waitlist/status/${token}`));
+  if (!res.ok) return null;
+  return res.json();
 }

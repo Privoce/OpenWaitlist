@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import Link from "next/link";
 import { PoweredBy } from "@/components/OpenWaitlistLogo";
 
 function SuccessContent() {
@@ -9,6 +10,7 @@ function SuccessContent() {
   const params = useSearchParams();
   const name = params.get("name") ?? "Guest";
   const ticket = params.get("ticket") ?? "---";
+  const token = params.get("token");
   const [countdown, setCountdown] = useState(5);
 
   useEffect(() => {
@@ -50,9 +52,18 @@ function SuccessContent() {
         >
           Sounds Good ({countdown}s)
         </button>
-        <p className="text-white text-sm mt-5 mb-4 text-center">
-          We will text you when a table is ready
-        </p>
+        {token ? (
+          <Link
+            href={`/p/waitlist/${token}/`}
+            className="text-white text-sm mt-5 mb-4 text-center underline underline-offset-4 hover:text-brand-gold"
+          >
+            Check your place in line
+          </Link>
+        ) : (
+          <p className="text-white text-sm mt-5 mb-4 text-center">
+            We will text you when a table is ready
+          </p>
+        )}
         <PoweredBy />
       </div>
     </div>

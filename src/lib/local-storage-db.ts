@@ -1,7 +1,10 @@
+import { formatWaitTime } from "./format";
+import { generatePublicToken } from "./public-url";
 import type {
   CreateWaitlistInput,
   Settings,
   WaitlistEntry,
+  WaitlistProgress,
   WaitlistStatus,
 } from "./types";
 
@@ -11,7 +14,19 @@ const SETTINGS_KEY = "openwaitlist:settings";
 function readEntries(): WaitlistEntry[] {
   if (typeof window === "undefined") return [];
   try {
-    return JSON.parse(localStorage.getItem(ENTRIES_KEY) ?? "[]") as WaitlistEntry[];
+    const entries = JSON.parse(
+      localStorage.getItem(ENTRIES_KEY) ?? "[]",
+    ) as WaitlistEntry[];
+    let changed = false;
+
+    const normalized = entries.map((entry) => {
+      if (entry.public_token) return entry;
+      changed = true;
+      return { ...entry, public_token: generatePublicToken() };
+    });
+
+    if (changed) writeEntries(normalized);
+    return normalized;
   } catch {
     return [];
   }
@@ -74,6 +89,7 @@ export function createLocalEntry(input: CreateWaitlistInput): WaitlistEntry {
   const settings = readSettings();
   const entry: WaitlistEntry = {
     id: crypto.randomUUID(),
+    public_token: generatePublicToken(),
     ticket_number: nextTicketNumber(entries, settings.ticket_prefix),
     name: input.name.trim(),
     phone: input.phone.trim(),
@@ -117,4 +133,53 @@ export function getLocalActiveCount(): number {
   return readEntries().filter((e) =>
     ["waiting", "notified", "checked_in"].includes(e.status),
   ).length;
+}
+
+function firstName(name: string) {
+  return name.trim().split(/\s+/)[0] || "Guest";
+}
+
+function progressMessage(status: WaitlistStatus) {
+  switch (status) {
+    case "waiting":
+      return "You're on the waitlist";
+    case "notified":
+      return "Your table is ready!";
+    case "checked_in":
+      return "You're checked in";
+    case "seated":
+      return "You've been seated";
+    case "cancelled":
+      return "Removed from the waitlist";
+    default:
+      return "Waitlist update";
+  }
+}
+
+export function getLocalWaitlistProgress(token: string): WaitlistProgress | null {
+  const entries = readEntries();
+  const entry = entries.find((item) => item.public_token === token);
+  if (!entry) return null;
+
+  const settings = readSettings();
+  const active = entries
+    .filter((item) => ["waiting", "notified", "checked_in"].includes(item.status))
+    .sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+    );
+  const index = active.findIndex((item) => item.id === entry.id);
+  const isActive = index >= 0;
+
+  return {
+    restaurant_name: settings.restaurant_name,
+    ticket_number: entry.ticket_number,
+    guest_name: firstName(entry.name),
+    party_size: entry.party_size,
+    status: entry.status,
+    position: isActive ? index + 1 : null,
+    parties_ahead: isActive ? index : 0,
+    status_message: progressMessage(entry.status),
+    wait_time: formatWaitTime(entry.created_at),
+  };
 }

@@ -9,8 +9,28 @@ export type WaitlistSource = "kiosk" | "staff" | "call_in" | "online";
 
 export type TableStatus = "available" | "occupied";
 
+export type WaitlistProgressStatus =
+  | "waiting"
+  | "notified"
+  | "checked_in"
+  | "seated"
+  | "cancelled";
+
+export interface WaitlistProgress {
+  restaurant_name: string;
+  ticket_number: string;
+  guest_name: string;
+  party_size: number;
+  status: WaitlistProgressStatus;
+  position: number | null;
+  parties_ahead: number;
+  status_message: string;
+  wait_time: string;
+}
+
 export interface WaitlistEntry {
   id: string;
+  public_token: string;
   ticket_number: string;
   name: string;
   phone: string;

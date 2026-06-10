@@ -2,6 +2,7 @@ import { createClient, type Client } from "@libsql/client";
 import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
+import { generatePublicToken } from "./public-url";
 import { SCHEMA_SQL, SEED_TABLES } from "./schema";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -9,7 +10,7 @@ const DB_PATH = path.join(DATA_DIR, "openwaitlist.db");
 
 let turso: Client | null = null;
 let sqlite: Database.Database | null = null;
-let initialized = false;
+let dbReady = false;
 
 export function useTurso() {
   return Boolean(process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN);
@@ -97,14 +98,52 @@ function seedTablesSqlite(database: Database.Database) {
   }
 }
 
+async function migratePublicTokens() {
+  const columns = await queryAll("PRAGMA table_info(waitlist_entries)");
+  const hasToken = columns.some((column) => column.name === "public_token");
+
+  if (!hasToken) {
+    await execute("ALTER TABLE waitlist_entries ADD COLUMN public_token TEXT");
+    await execute(
+      "CREATE UNIQUE INDEX IF NOT EXISTS idx_waitlist_public_token ON waitlist_entries(public_token)",
+    );
+  }
+
+  const missing = await queryAll(
+    "SELECT id FROM waitlist_entries WHERE public_token IS NULL OR public_token = ''",
+  );
+
+  for (const row of missing) {
+    let token = generatePublicToken();
+    let exists = await queryOne(
+      "SELECT id FROM waitlist_entries WHERE public_token = ?",
+      [token],
+    );
+
+    while (exists) {
+      token = generatePublicToken();
+      exists = await queryOne(
+        "SELECT id FROM waitlist_entries WHERE public_token = ?",
+        [token],
+      );
+    }
+
+    await execute("UPDATE waitlist_entries SET public_token = ? WHERE id = ?", [
+      token,
+      row.id,
+    ]);
+  }
+}
+
 export async function initDb() {
-  if (initialized) return;
+  if (dbReady) return;
   if (useTurso()) {
     await initTurso();
   } else {
     initSqlite();
   }
-  initialized = true;
+  dbReady = true;
+  await migratePublicTokens();
 }
 
 function tursoRowToRecord(row: Record<string, unknown>): Record<string, unknown> {

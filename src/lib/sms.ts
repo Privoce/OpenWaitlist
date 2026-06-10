@@ -1,3 +1,4 @@
+import { waitlistProgressUrl } from "./public-url";
 import { isTelnyxConfigured, sendSms } from "./telnyx";
 import { NOTIFY_UID, sendNotification } from "./vocechat";
 import type { WaitlistEntry, WaitlistStatus } from "./types";
@@ -17,12 +18,10 @@ async function deliverToStaff(message: string) {
   return { success: true, message, channel: "vocechat" as const, uid: NOTIFY_UID };
 }
 
-export async function sendQueueConfirmation(
-  entry: WaitlistEntry,
-  tablesAhead: number,
-) {
+export async function sendQueueConfirmation(entry: WaitlistEntry) {
   const { restaurant_name } = await getSettings();
-  const message = `${restaurant_name}: Congrats ${entry.name}, you are on the queue! Your number is ${entry.ticket_number}, there are ${tablesAhead} tables waiting ahead. We will text you asap...`;
+  const progressUrl = waitlistProgressUrl(entry.public_token);
+  const message = `${restaurant_name}: You've been added to the ${restaurant_name} waitlist. Your number is ${entry.ticket_number}. Check your place in line here: ${progressUrl} Reply STOP to cancel.`;
 
   try {
     return await deliverToCustomer(entry, message);
