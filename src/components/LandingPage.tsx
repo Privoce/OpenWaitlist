@@ -90,9 +90,9 @@ export function LandingPage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                let Privoce handle
+                book a call
               </a>{" "}
-              on-premise deployment for you.
+              to have Privoce handle on-premise deployment for you.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
