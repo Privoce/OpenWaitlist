@@ -1,33 +1,20 @@
-# Enable GitHub Pages (required — site will 404 until this is done)
+# GitHub Pages setup
 
-Your DNS is already correct (`openwaitlist.privoce.com` → `privoce.github.io`).
+**Live site:** https://openwaitlist.privoce.com
 
-The deploy workflow **builds successfully** but **cannot publish** until Pages is enabled in the repo. Every deploy has failed with:
+## Which workflow to use
 
-> Failed to create deployment (status: 404) — Ensure GitHub Pages has been enabled
+Use **only** `.github/workflows/deploy-pages.yml`. It is customized for OpenWaitlist:
 
-## Fix (about 30 seconds)
+- Static export with `GITHUB_PAGES=true`
+- Strips API routes (not supported on Pages)
+- Builds for custom domain at `/` (not `/OpenWaitlist`)
+- Adds `.nojekyll` for Next.js assets
 
-You need **admin access** on the `Privoce/OpenWaitlist` repository.
+Do **not** use GitHub’s generic `nextjs.yml` template — it fails on this project (API routes, custom domain).
 
-1. Open: **https://github.com/Privoce/OpenWaitlist/settings/pages**
+## If you need to re-enable Pages
 
-2. Under **Build and deployment**, set **Source** to **GitHub Actions**  
-   (Do **not** choose “Deploy from a branch”.)
-
-3. Under **Custom domain**, enter: `openwaitlist.privoce.com`  
-   Click **Save**. Wait for the DNS check to pass (your CNAME is already set).
-
-4. Re-run the deploy:  
-   **https://github.com/Privoce/OpenWaitlist/actions/workflows/deploy-pages.yml** → **Run workflow**
-
-5. When the workflow shows green, visit: **https://openwaitlist.privoce.com**
-
-## Verify it worked
-
-- Actions run: both **build** and **deploy** jobs should be green
-- Settings → Pages should show: “Your site is live at `https://openwaitlist.privoce.com`”
-
-## Alternate URL
-
-Without a custom domain, the site would be at `https://privoce.github.io/OpenWaitlist/` (requires `GITHUB_PAGES_BASE_PATH=/OpenWaitlist` in the workflow). The current setup targets the custom domain at the root.
+1. **Settings → Pages** → Source: **GitHub Actions**
+2. Custom domain: `openwaitlist.privoce.com`
+3. Run **Actions → Deploy GitHub Pages**
