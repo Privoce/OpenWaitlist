@@ -2,7 +2,7 @@ export function getSiteUrl() {
   const url =
     process.env.SITE_URL ??
     process.env.NEXT_PUBLIC_SITE_URL ??
-    "https://openwaitlist.vercel.app";
+    "https://app.openwaitlist.privoce.com";
   return url.replace(/\/$/, "");
 }
 
