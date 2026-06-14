@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { BRAND_NAME } from "@/lib/brand";
 import { fetchWaitlistProgress } from "@/lib/data-access";
 import type { WaitlistProgress } from "@/lib/types";
 import { PoweredBy } from "@/components/OpenWaitlistLogo";
@@ -63,7 +64,7 @@ export function WaitlistProgressView({ token }: { token: string }) {
   return (
     <div className="min-h-screen bg-brand-gold-light/30 flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
-        <p className="text-brand-dark/60 text-sm mb-2">{progress.restaurant_name}</p>
+        <p className="text-brand-dark/60 text-sm mb-2">{BRAND_NAME}</p>
         <h1 className="text-2xl font-semibold text-brand-dark text-center">
           {progress.status_message}
         </h1>

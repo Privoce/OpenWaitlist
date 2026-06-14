@@ -1,4 +1,5 @@
 import { getSampleWaitlistProgress, isSampleWaitlistToken } from "./demo-progress";
+import { BRAND_NAME } from "./brand";
 import { execute, queryAll, queryOne } from "./db";
 import { formatWaitTime } from "./format";
 import { generatePublicToken } from "./public-url";
@@ -50,7 +51,7 @@ export async function getSettings(): Promise<Settings> {
     "SELECT restaurant_name, ticket_prefix FROM settings WHERE id = 1",
   );
   return {
-    restaurant_name: String(row?.restaurant_name ?? "My Restaurant"),
+    restaurant_name: BRAND_NAME,
     ticket_prefix: String(row?.ticket_prefix ?? "SE"),
   };
 }
@@ -61,7 +62,7 @@ export async function updateSettings(updates: Partial<Settings>): Promise<Settin
   await execute(
     `UPDATE settings SET restaurant_name = ?, ticket_prefix = ? WHERE id = 1`,
     [
-      updates.restaurant_name ?? current.restaurant_name,
+      BRAND_NAME,
       updates.ticket_prefix ?? current.ticket_prefix,
     ],
   );
@@ -149,13 +150,12 @@ export async function getWaitlistProgress(
   const entry = await getWaitlistEntryByToken(token);
   if (!entry) return null;
 
-  const { restaurant_name } = await getSettings();
   const active = await listWaitlistEntries(["waiting", "notified", "checked_in"]);
   const index = active.findIndex((item) => item.id === entry.id);
   const isActive = index >= 0;
 
   return {
-    restaurant_name,
+    restaurant_name: BRAND_NAME,
     ticket_number: entry.ticket_number,
     guest_name: firstName(entry.name),
     party_size: entry.party_size,

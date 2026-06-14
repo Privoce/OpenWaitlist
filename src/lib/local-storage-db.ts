@@ -1,3 +1,4 @@
+import { BRAND_NAME } from "./brand";
 import { getSampleWaitlistProgress, isSampleWaitlistToken } from "./demo-progress";
 import { formatWaitTime } from "./format";
 import { generatePublicToken } from "./public-url";
@@ -39,15 +40,15 @@ function writeEntries(entries: WaitlistEntry[]) {
 
 function readSettings(): Settings {
   if (typeof window === "undefined") {
-    return { restaurant_name: "My Restaurant", ticket_prefix: "SE" };
+    return { restaurant_name: BRAND_NAME, ticket_prefix: "SE" };
   }
   try {
     return JSON.parse(
       localStorage.getItem(SETTINGS_KEY) ??
-        '{"restaurant_name":"My Restaurant","ticket_prefix":"SE"}',
+        `{"restaurant_name":"${BRAND_NAME}","ticket_prefix":"SE"}`,
     ) as Settings;
   } catch {
-    return { restaurant_name: "My Restaurant", ticket_prefix: "SE" };
+    return { restaurant_name: BRAND_NAME, ticket_prefix: "SE" };
   }
 }
 
@@ -178,7 +179,7 @@ export function getLocalWaitlistProgress(token: string): WaitlistProgress | null
   const isActive = index >= 0;
 
   return {
-    restaurant_name: settings.restaurant_name,
+    restaurant_name: BRAND_NAME,
     ticket_number: entry.ticket_number,
     guest_name: firstName(entry.name),
     party_size: entry.party_size,

@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { BRAND_NAME } from "@/lib/brand";
 import {
   createWaitlistEntry,
-  fetchSettings,
   fetchWaitlistCount,
 } from "@/lib/data-access";
 import { formatPhone } from "@/lib/format";
@@ -19,7 +19,6 @@ export default function KioskAddPage() {
   const [partySize, setPartySize] = useState("");
   const [childCount, setChildCount] = useState("");
   const [smsOptIn, setSmsOptIn] = useState(false);
-  const [restaurantName, setRestaurantName] = useState("My Restaurant");
   const [activeField, setActiveField] = useState<"phone" | "party" | "child">("party");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +26,6 @@ export default function KioskAddPage() {
 
   useEffect(() => {
     fetchWaitlistCount().then(setWaitlistCount);
-    fetchSettings().then((settings) => setRestaurantName(settings.restaurant_name));
   }, []);
 
   useInactivityTimeout(() => router.push("/kiosk/"), 60_000);
@@ -117,7 +115,7 @@ export default function KioskAddPage() {
 
       <div className="px-6 pt-2 pb-4">
         <h1 className="text-2xl font-semibold text-gray-900">Add to waitlist</h1>
-        <p className="mt-1 text-sm text-gray-500">{restaurantName}</p>
+        <p className="mt-1 text-sm text-gray-500">{BRAND_NAME}</p>
       </div>
 
       <div className="px-6 space-y-5 flex-1 overflow-y-auto">
@@ -158,7 +156,7 @@ export default function KioskAddPage() {
             className="mt-1 h-5 w-5 shrink-0 accent-brand-primary"
           />
           <span className="text-sm leading-relaxed text-brand-dark/80">
-            {smsOptInLabel(restaurantName)}{" "}
+            {smsOptInLabel()}{" "}
             <Link href={PRIVACY_URL} className="text-brand-primary underline">
               Privacy Policy
             </Link>
@@ -197,11 +195,13 @@ export default function KioskAddPage() {
             </button>
           </div>
         </div>
-
-        {error && (
-          <p className="rounded-lg bg-red-50 text-red-700 px-4 py-3 text-sm">{error}</p>
-        )}
       </div>
+
+      {error && (
+        <div className="px-6 pb-4">
+          <p className="rounded-lg bg-red-50 text-red-700 px-4 py-3 text-sm">{error}</p>
+        </div>
+      )}
 
       <div className="grid grid-cols-3 gap-2 p-4 bg-gray-100 border-t border-gray-200">
         {keypadKeys.map((key) => {

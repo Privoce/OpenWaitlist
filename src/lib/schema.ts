@@ -1,7 +1,7 @@
 export const SCHEMA_SQL = `
 CREATE TABLE IF NOT EXISTS settings (
   id INTEGER PRIMARY KEY CHECK (id = 1),
-  restaurant_name TEXT NOT NULL DEFAULT 'My Restaurant',
+  restaurant_name TEXT NOT NULL DEFAULT 'OpenWaitlist',
   ticket_prefix TEXT NOT NULL DEFAULT 'SE'
 );
 
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS tables (
 );
 
 INSERT OR IGNORE INTO settings (id, restaurant_name, ticket_prefix)
-VALUES (1, 'My Restaurant', 'SE');
+VALUES (1, 'OpenWaitlist', 'SE');
 `;
 
 export const SEED_TABLES = [

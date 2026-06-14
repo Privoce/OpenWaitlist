@@ -9,7 +9,7 @@ Guests join the waitlist on an in-restaurant OpenWaitlist kiosk tablet.
 2. Phone number is optional and only used if the guest opts in to SMS.
 3. Guest sees an unchecked optional checkbox with this exact language next to the phone field:
 
-"I agree to receive automated waitlist text messages from [Restaurant Name] at the phone number above. Message frequency varies. Message and data rates may apply. Consent is not required to dine. Reply STOP to cancel. Reply HELP for help."
+"I agree to receive automated waitlist text messages from OpenWaitlist at the phone number above. Message frequency varies. Message and data rates may apply. Consent is not required to dine. Reply STOP to cancel. Reply HELP for help."
 
 Privacy Policy: https://app.openwaitlist.privoce.com/privacy/
 Terms: https://app.openwaitlist.privoce.com/terms/
@@ -24,22 +24,22 @@ Upload a screenshot of the kiosk form showing the optional phone field, unchecke
 
 ## Perceived sender
 
-OpenWaitlist is a platform. Each restaurant configures its own `restaurant_name` in settings (default: "My Restaurant"). SMS messages are sent **on behalf of that restaurant**, e.g.:
+All SMS messages are sent from **OpenWaitlist** as the sole sender identity. Message prefix:
 
-`My Restaurant: You've been added to the My Restaurant waitlist...`
+`OpenWaitlist: You've been added to the waitlist...`
 
-For a production restaurant deployment, that location's legal business name should be set in admin settings and registered as its own 10DLC brand/campaign if required by the carrier.
+The kiosk UI, guest progress pages, and SMS copy all display **OpenWaitlist** — not a per-location restaurant name.
 
 ## Sample messages
 
 **Message 1 (join confirmation):**
 ```
-My Restaurant: You've been added to the My Restaurant waitlist. Your number is SE01. Check your place in line here: https://app.openwaitlist.privoce.com/p/waitlist/aBc12XyZ9k/ Reply HELP for help. Reply STOP to cancel.
+OpenWaitlist: You've been added to the waitlist. Your number is SE01. Check your place in line here: https://app.openwaitlist.privoce.com/p/waitlist/aBc12XyZ9k/ Reply HELP for help. Reply STOP to cancel.
 ```
 
 **Message 2 (table ready):**
 ```
-My Restaurant: Hi Jane, it's your turn now! Please show the number SE01 to the host when you have arrived. Reply HELP for help. Reply STOP to cancel.
+OpenWaitlist: Hi Jane, it's your turn now! Please show the number SE01 to the host when you have arrived. Reply HELP for help. Reply STOP to cancel.
 ```
 
 ## Keywords (no spaces after commas)

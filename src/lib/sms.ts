@@ -1,8 +1,8 @@
+import { BRAND_NAME } from "./brand";
 import { waitlistProgressUrl } from "./public-url";
 import { isTelnyxConfigured, sendSms } from "./telnyx";
 import { NOTIFY_UID, sendNotification } from "./vocechat";
 import type { WaitlistEntry, WaitlistStatus } from "./types";
-import { getSettings } from "./waitlist";
 
 async function deliverToCustomer(entry: WaitlistEntry, message: string) {
   if (!isTelnyxConfigured()) {
@@ -19,9 +19,8 @@ async function deliverToStaff(message: string) {
 }
 
 export async function sendQueueConfirmation(entry: WaitlistEntry) {
-  const { restaurant_name } = await getSettings();
   const progressUrl = waitlistProgressUrl(entry.public_token);
-  const message = `${restaurant_name}: You've been added to the ${restaurant_name} waitlist. Your number is ${entry.ticket_number}. Check your place in line here: ${progressUrl} Reply HELP for help. Reply STOP to cancel.`;
+  const message = `${BRAND_NAME}: You've been added to the waitlist. Your number is ${entry.ticket_number}. Check your place in line here: ${progressUrl} Reply HELP for help. Reply STOP to cancel.`;
 
   try {
     return await deliverToCustomer(entry, message);
@@ -37,8 +36,7 @@ export async function sendQueueConfirmation(entry: WaitlistEntry) {
 }
 
 export async function sendTableReadyNotification(entry: WaitlistEntry) {
-  const { restaurant_name } = await getSettings();
-  const message = `${restaurant_name}: Hi ${entry.name}, it's your turn now! Please show the number ${entry.ticket_number} to the host when you have arrived. Reply HELP for help. Reply STOP to cancel.`;
+  const message = `${BRAND_NAME}: Hi ${entry.name}, it's your turn now! Please show the number ${entry.ticket_number} to the host when you have arrived. Reply HELP for help. Reply STOP to cancel.`;
 
   try {
     return await deliverToCustomer(entry, message);
@@ -57,12 +55,10 @@ export async function sendStatusNotification(
   entry: WaitlistEntry,
   status: WaitlistStatus,
 ) {
-  const { restaurant_name } = await getSettings();
-
   const messages: Partial<Record<WaitlistStatus, string>> = {
-    checked_in: `${restaurant_name}: ${entry.name} (${entry.ticket_number}) has checked in. Party of ${entry.party_size}. Phone: ${entry.phone}`,
-    seated: `${restaurant_name}: ${entry.name} (${entry.ticket_number}) has been seated. Party of ${entry.party_size}.`,
-    cancelled: `${restaurant_name}: ${entry.name} (${entry.ticket_number}) was removed from the waitlist.`,
+    checked_in: `${BRAND_NAME}: ${entry.name} (${entry.ticket_number}) has checked in. Party of ${entry.party_size}. Phone: ${entry.phone}`,
+    seated: `${BRAND_NAME}: ${entry.name} (${entry.ticket_number}) has been seated. Party of ${entry.party_size}.`,
+    cancelled: `${BRAND_NAME}: ${entry.name} (${entry.ticket_number}) was removed from the waitlist.`,
   };
 
   const message = messages[status];
@@ -83,8 +79,6 @@ export async function sendStatusNotification(
 }
 
 export async function sendTestNotification() {
-  const { restaurant_name } = await getSettings();
-
   if (isTelnyxConfigured()) {
     const testTo = process.env.TELNYX_TEST_TO?.trim();
     if (!testTo) {
@@ -93,11 +87,11 @@ export async function sendTestNotification() {
       );
     }
 
-    const message = `${restaurant_name}: OpenWaitlist Telnyx test — SMS notifications are working.`;
+    const message = `${BRAND_NAME}: Telnyx test — SMS notifications are working.`;
     const result = await sendSms(testTo, message);
     return { success: true, message, channel: "telnyx" as const, ...result };
   }
 
-  const message = `${restaurant_name}: OpenWaitlist VoceChat test — staff notifications are working.`;
+  const message = `${BRAND_NAME}: VoceChat test — staff notifications are working.`;
   return deliverToStaff(message);
 }
