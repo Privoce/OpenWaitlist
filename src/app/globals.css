@@ -41,6 +41,14 @@ body {
   }
 }
 
+.prose-legal h2 {
+  color: var(--brand-dark);
+}
+
+.prose-legal section + section {
+  padding-top: 0.25rem;
+}
+
 .animate-spin-slow {
   animation: spin-slow 1s linear infinite;
 }

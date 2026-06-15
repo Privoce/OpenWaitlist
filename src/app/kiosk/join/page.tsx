@@ -2,6 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import {
+  KioskFooter,
+  KioskPrimaryButton,
+  KioskShell,
+  KioskTitle,
+  KioskTopBar,
+} from "@/components/kiosk/KioskChrome";
+import { PageSpinner } from "@/components/ui/PageSpinner";
 import { fetchActiveWaitlist, fetchSettings } from "@/lib/data-access";
 import { useInactivityTimeout } from "@/hooks/useInactivityTimeout";
 import { usePolling } from "@/hooks/usePolling";
@@ -40,58 +48,59 @@ export default function KioskJoinPage() {
   const prefix = settings?.ticket_prefix ?? "SE";
 
   if (loading || count === 0) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-brand-primary border-t-transparent rounded-full animate-spin-slow" />
-      </div>
-    );
+    return <PageSpinner label="Loading waitlist..." />;
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <div className="px-6 pt-6">
-        <button
-          type="button"
-          onClick={() => router.push("/kiosk/")}
-          className="flex items-center gap-1 text-gray-500 hover:text-gray-700 text-lg"
-        >
-          ← Back
-        </button>
-      </div>
+    <KioskShell>
+      <KioskTopBar onBack={() => router.push("/kiosk/")} />
+      <KioskTitle title="Demo waitlist" />
 
-      <header className="pt-4 pb-6 text-center">
-        <h1 className="text-2xl font-semibold text-gray-800">Join Waitlist</h1>
-        <p className="text-sm text-gray-400 mt-2">{prefix}(1-8)</p>
-        <p className="text-6xl font-light text-brand-primary mt-2">{count}</p>
-      </header>
-
-      <div className="flex-1 px-8">
-        <div className="grid grid-cols-3 text-sm text-gray-400 mb-4 px-2">
-          <span>Waitlist Number</span>
-          <span className="text-center">Name</span>
-          <span className="text-right">Party Size</span>
+      <div className="flex-1 px-6 pb-6">
+        <div className="mx-auto max-w-md text-center">
+          <div className="inline-flex min-w-[8rem] flex-col items-center rounded-2xl border border-brand-primary/15 bg-white px-8 py-5 shadow-sm">
+            <p className="text-5xl font-semibold text-brand-primary tabular-nums">{count}</p>
+            <p className="mt-1 text-sm text-gray-500">
+              {count === 1 ? "party waiting" : "parties waiting"}
+            </p>
+          </div>
         </div>
 
-        <div className="space-y-5">
-          {entries.map((entry) => (
-            <div key={entry.id} className="grid grid-cols-3 text-lg text-gray-600 px-2">
-              <span>{entry.ticket_number}</span>
-              <span className="text-center">{entry.name}</span>
-              <span className="text-right">{entry.party_size}</span>
+        <div className="mx-auto mt-8 w-full max-w-md">
+          <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+            <div className="grid grid-cols-[5.5rem_1fr_3.5rem] gap-3 border-b border-gray-100 bg-gray-50 px-4 py-3 text-xs font-semibold uppercase tracking-wide text-gray-400">
+              <span>Ticket</span>
+              <span>Name</span>
+              <span className="text-right">Party</span>
             </div>
-          ))}
+
+            <div className="divide-y divide-gray-100">
+              {entries.map((entry) => (
+                <div
+                  key={entry.id}
+                  className="grid grid-cols-[5.5rem_1fr_3.5rem] gap-3 px-4 py-4 text-gray-800"
+                >
+                  <span className="font-semibold text-brand-primary tabular-nums">
+                    {entry.ticket_number}
+                  </span>
+                  <span className="truncate">{entry.name}</span>
+                  <span className="text-right tabular-nums text-gray-600">{entry.party_size}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <p className="mt-3 text-center text-xs text-gray-400">
+            Ticket prefix <span className="font-medium text-gray-500">{prefix}</span>
+          </p>
         </div>
       </div>
 
-      <div className="p-8 pb-12">
-        <button
-          type="button"
-          onClick={() => router.push("/kiosk/add/")}
-          className="w-full rounded-full bg-brand-primary py-5 text-xl font-medium text-white shadow-lg active:scale-[0.99] transition-transform"
-        >
-          Add to waitlist
-        </button>
-      </div>
-    </div>
+      <KioskFooter>
+        <KioskPrimaryButton onClick={() => router.push("/kiosk/add/")}>
+          Add to demo waitlist
+        </KioskPrimaryButton>
+      </KioskFooter>
+    </KioskShell>
   );
 }

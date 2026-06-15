@@ -12,7 +12,7 @@ export function getSampleWaitlistProgress(): WaitlistProgress {
     status: "waiting",
     position: 3,
     parties_ahead: 2,
-    status_message: "You're on the waitlist",
+    status_message: "You're on the sample waitlist",
     wait_time: "12 mins",
   };
 }

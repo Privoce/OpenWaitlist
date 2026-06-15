@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — OpenWaitlist",
-  description: "Privacy policy for OpenWaitlist SMS waitlist notifications.",
+  title: "Privacy Policy — OpenWaitlist Demo",
+  description: "Privacy policy for the OpenWaitlist product demo and sample SMS notifications.",
 };
 
 export default function PrivacyPage() {
@@ -12,57 +12,65 @@ export default function PrivacyPage() {
       <section>
         <h2 className="text-xl font-semibold text-brand-dark">Overview</h2>
         <p className="mt-2">
-          OpenWaitlist is open-source waitlist software provided by Privoce. This
-          policy describes how information is handled when guests join a restaurant
-          waitlist and receive SMS notifications.
+          OpenWaitlist is open-source waitlist software provided by Privoce. The site at{" "}
+          <strong>app.openwaitlist.privoce.com</strong> is a <strong>live product demo</strong>{" "}
+          for restaurant operators evaluating the software. It is not a live restaurant
+          waitlist serving paying guests.
         </p>
       </section>
 
       <section>
         <h2 className="text-xl font-semibold text-brand-dark">Information we collect</h2>
         <p className="mt-2">
-          When a guest joins a waitlist at a participating location, they may
-          provide their name, phone number, and party size. This information is
-          collected only at the guest&apos;s direction on the in-restaurant kiosk
-          or by staff on their behalf.
+          Demo participants may enter a sample name, optional phone number, and party size
+          on the demo kiosk to try the product. This information is collected only at the
+          participant&apos;s direction for evaluation purposes.
         </p>
       </section>
 
       <section>
         <h2 className="text-xl font-semibold text-brand-dark">How we use information</h2>
         <p className="mt-2">
-          Phone numbers are used solely to send transactional SMS messages related
-          to the waitlist, such as queue confirmation and table-ready
-          notifications. We do not use this information for marketing, advertising,
-          or unrelated purposes.
+          If a demo participant opts in, their phone number is used solely to send sample
+          transactional SMS messages that demonstrate how OpenWaitlist works — such as
+          queue confirmation and table-ready notifications in the demo flow. We do not use
+          this information for marketing, advertising, or unrelated purposes.
         </p>
       </section>
 
       <section>
         <h2 className="text-xl font-semibold text-brand-dark">Data storage</h2>
         <p className="mt-2">
-          We do not store guest personal information for marketing or long-term
-          retention. Waitlist details exist only as long as needed to manage the
-          active queue at the restaurant. Privoce does not sell, rent, or share
-          guest personal information with third parties for their own purposes.
+          Demo waitlist entries are temporary and exist only to support the product
+          evaluation experience. Privoce does not sell, rent, or share demo participant
+          personal information with third parties for their own purposes.
         </p>
       </section>
 
       <section>
         <h2 className="text-xl font-semibold text-brand-dark">SMS consent</h2>
         <p className="mt-2">
-          By entering a phone number on the waitlist kiosk, the guest consents to
-          receive transactional SMS messages about their waitlist status. Message
-          frequency varies. Message and data rates may apply.
+          SMS is optional in the demo. Participants must check an unchecked opt-in box and
+          enter a phone number to receive sample messages. Message frequency varies. Message
+          and data rates may apply.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="text-xl font-semibold text-brand-dark">Production deployments</h2>
+        <p className="mt-2">
+          When a restaurant deploys its own OpenWaitlist instance, that location is responsible
+          for its own guest privacy practices and 10DLC registration. This policy applies
+          to the public demo operated by Privoce at app.openwaitlist.privoce.com.
         </p>
       </section>
 
       <section>
         <h2 className="text-xl font-semibold text-brand-dark">Opt out</h2>
         <p className="mt-2">
-          Guests may opt out of SMS messages at any time by replying{" "}
-          <strong>STOP</strong> to a message. For help, reply <strong>HELP</strong>{" "}
-          or contact the restaurant host.
+          Demo participants may opt out of SMS at any time by replying{" "}
+          <strong>STOP</strong> to a message. For help, reply <strong>HELP</strong> or
+          contact Privoce.
         </p>
       </section>
 

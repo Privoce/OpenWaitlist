@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "OpenWaitlist",
-  description: "Open-source restaurant waitlist management",
+  description: "Live product demo of the open-source restaurant waitlist app by Privoce.",
 };
 
 export default function RootLayout({

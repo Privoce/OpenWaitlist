@@ -20,7 +20,7 @@ async function deliverToStaff(message: string) {
 
 export async function sendQueueConfirmation(entry: WaitlistEntry) {
   const progressUrl = waitlistProgressUrl(entry.public_token);
-  const message = `${BRAND_NAME}: You've been added to the waitlist. Your number is ${entry.ticket_number}. Check your place in line here: ${progressUrl} Reply HELP for help. Reply STOP to cancel.`;
+  const message = `${BRAND_NAME} demo: You've been added to the sample waitlist. Your number is ${entry.ticket_number}. Check your place in line here: ${progressUrl} Reply HELP for help. Reply STOP to cancel.`;
 
   try {
     return await deliverToCustomer(entry, message);
@@ -36,7 +36,7 @@ export async function sendQueueConfirmation(entry: WaitlistEntry) {
 }
 
 export async function sendTableReadyNotification(entry: WaitlistEntry) {
-  const message = `${BRAND_NAME}: Hi ${entry.name}, it's your turn now! Please show the number ${entry.ticket_number} to the host when you have arrived. Reply HELP for help. Reply STOP to cancel.`;
+  const message = `${BRAND_NAME} demo: Hi ${entry.name}, it's your turn in this sample flow. Show ticket ${entry.ticket_number} to continue the demo. Reply HELP for help. Reply STOP to cancel.`;
 
   try {
     return await deliverToCustomer(entry, message);

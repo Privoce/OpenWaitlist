@@ -3,8 +3,8 @@ import { SAMPLE_WAITLIST_TOKEN } from "@/lib/demo-progress";
 import { WaitlistProgressView } from "@/components/WaitlistProgressView";
 
 export const metadata: Metadata = {
-  title: "Waitlist Status — OpenWaitlist",
-  description: "Check your place in the restaurant waitlist.",
+  title: "Waitlist Status — OpenWaitlist Demo",
+  description: "Check your place in the OpenWaitlist product demo queue.",
 };
 
 export function generateStaticParams() {

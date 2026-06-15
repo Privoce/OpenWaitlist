@@ -7,7 +7,16 @@ export function OpenWaitlistLogo({ className = "" }: { className?: string }) {
   );
 }
 
-export function PoweredBy() {
+export function PoweredBy({ variant = "dark" }: { variant?: "dark" | "light" }) {
+  if (variant === "light") {
+    return (
+      <p className="text-xs text-gray-400">
+        powered by{" "}
+        <span className="font-medium text-brand-primary">OpenWaitlist</span>
+      </p>
+    );
+  }
+
   return (
     <p className="text-xs text-brand-gold-light/80">
       powered by <span className="font-medium text-white">OpenWaitlist</span>

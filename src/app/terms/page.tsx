@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { LegalPage } from "@/components/LegalPage";
 
 export const metadata: Metadata = {
-  title: "Terms & Conditions — OpenWaitlist",
-  description: "Terms and conditions for OpenWaitlist SMS waitlist notifications.",
+  title: "Terms & Conditions — OpenWaitlist Demo",
+  description: "Terms and conditions for the OpenWaitlist product demo and sample SMS notifications.",
 };
 
 export default function TermsPage() {
@@ -12,8 +12,9 @@ export default function TermsPage() {
       <section>
         <h2 className="text-xl font-semibold text-brand-dark">Agreement</h2>
         <p className="mt-2">
-          By joining a waitlist that uses OpenWaitlist and providing a phone
-          number, you agree to these Terms &amp; Conditions and our{" "}
+          By using the OpenWaitlist product demo at app.openwaitlist.privoce.com and
+          optionally providing a phone number, you agree to these Terms &amp; Conditions
+          and our{" "}
           <a href="/privacy/" className="text-brand-primary hover:underline">
             Privacy Policy
           </a>
@@ -22,22 +23,21 @@ export default function TermsPage() {
       </section>
 
       <section>
-        <h2 className="text-xl font-semibold text-brand-dark">Service description</h2>
+        <h2 className="text-xl font-semibold text-brand-dark">Demo service</h2>
         <p className="mt-2">
-          OpenWaitlist helps restaurants manage guest waitlists. The service may
-          send transactional SMS messages about queue status and table
-          availability. OpenWaitlist is provided by Privoce and may be operated
-          by an individual restaurant location.
+          This site is a <strong>product demonstration</strong> operated by Privoce for
+          restaurant operators evaluating OpenWaitlist. It is not a live restaurant
+          waitlist and does not guarantee seating, reservations, or dining service.
         </p>
       </section>
 
       <section>
         <h2 className="text-xl font-semibold text-brand-dark">SMS program</h2>
         <p className="mt-2">
-          When you provide your mobile number, you consent to receive automated
-          transactional text messages related to your waitlist entry. Message
-          frequency varies. Message and data rates may apply. Consent is not a
-          condition of purchase or dining.
+          If you opt in, you may receive automated sample text messages from{" "}
+          <strong>OpenWaitlist</strong> that demonstrate how guest notifications work in
+          the demo. Message frequency varies. Message and data rates may apply. SMS is
+          optional and not required to use the demo.
         </p>
       </section>
 
@@ -45,8 +45,17 @@ export default function TermsPage() {
         <h2 className="text-xl font-semibold text-brand-dark">Opt out and help</h2>
         <p className="mt-2">
           Reply <strong>STOP</strong> to cancel SMS messages. Reply <strong>HELP</strong>{" "}
-          for assistance. After opting out, you may still receive a final
-          confirmation message.
+          for assistance. After opting out, you may still receive a final confirmation
+          message.
+        </p>
+      </section>
+
+      <section>
+        <h2 className="text-xl font-semibold text-brand-dark">Production use</h2>
+        <p className="mt-2">
+          Restaurants that deploy their own OpenWaitlist instance are responsible for
+          operating their waitlist, registering their own 10DLC brand and campaign, and
+          complying with applicable messaging laws for their guests.
         </p>
       </section>
 
@@ -54,26 +63,24 @@ export default function TermsPage() {
         <h2 className="text-xl font-semibold text-brand-dark">No warranty</h2>
         <p className="mt-2">
           OpenWaitlist is provided on an &quot;as is&quot; basis. We do not guarantee
-          uninterrupted SMS delivery or exact wait times. Restaurants are
-          responsible for seating guests and managing their queue.
+          uninterrupted SMS delivery or exact wait times in the demo environment.
         </p>
       </section>
 
       <section>
         <h2 className="text-xl font-semibold text-brand-dark">Limitation of liability</h2>
         <p className="mt-2">
-          To the fullest extent permitted by law, Privoce and participating
-          restaurants are not liable for indirect, incidental, or consequential
-          damages arising from use of the waitlist or SMS notifications.
+          To the fullest extent permitted by law, Privoce is not liable for indirect,
+          incidental, or consequential damages arising from use of the demo or sample SMS
+          notifications.
         </p>
       </section>
 
       <section>
         <h2 className="text-xl font-semibold text-brand-dark">Changes</h2>
         <p className="mt-2">
-          We may update these terms from time to time. Continued use of the
-          waitlist service after changes are posted constitutes acceptance of the
-          updated terms.
+          We may update these terms from time to time. Continued use of the demo after
+          changes are posted constitutes acceptance of the updated terms.
         </p>
       </section>
 

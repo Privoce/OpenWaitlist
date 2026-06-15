@@ -12,42 +12,45 @@ import { SAMPLE_WAITLIST_TOKEN } from "@/lib/demo-progress";
 
 const features = [
   {
-    title: "Customer kiosk",
+    title: "Guest kiosk",
     description:
-      "A touch-friendly iPad screen for guests to join the waitlist — name, phone, party size, done.",
+      "Walk through the touch-friendly iPad flow your guests would use — name, optional SMS opt-in, party size.",
   },
   {
     title: "Staff admin",
     description:
-      "Search, filter, and manage the queue. Notify guests, check them in, seat parties, or cancel.",
+      "See how hosts search the queue, notify guests, check them in, seat parties, and cancel entries.",
   },
   {
     title: "SMS & progress links",
     description:
-      "Guests get a text with a private link to check their place in line, plus a ping when their table is ready.",
+      "Opt in with your own phone number to receive sample queue and table-ready texts, plus a private progress link.",
   },
   {
-    title: "Free to start",
+    title: "Deploy when ready",
     description:
-      "Deploy yourself on Vercel or run locally at no cost. Need help? Privoce offers on-premise setup and support.",
+      "Self-host for free on Vercel or run on-premise. Privoce can help with installation, 10DLC setup, and support.",
   },
 ];
 
 const steps = [
   {
     step: "1",
-    title: "Guest joins",
-    description: "They tap the kiosk, enter their details, and get a ticket number.",
+    title: "Try the kiosk",
+    description:
+      "Open the live demo, add a sample party, and optionally test SMS with your phone number.",
   },
   {
     step: "2",
-    title: "Staff manages",
-    description: "Your team tracks the queue, sends table-ready texts, and seats parties.",
+    title: "Manage the queue",
+    description:
+      "Open staff admin to notify, check in, and seat demo entries like your team would.",
   },
   {
     step: "3",
-    title: "Guest returns",
-    description: "They get an SMS when it's their turn and show their number to the host.",
+    title: "Deploy for real",
+    description:
+      "When you're ready, deploy your own instance with your restaurant's branding and 10DLC registration.",
   },
 ];
 
@@ -70,7 +73,7 @@ export function LandingPage() {
               href="/kiosk/"
               className="rounded-full bg-brand-primary px-4 py-2 text-sm font-medium text-white hover:bg-brand-primary-dark transition-colors"
             >
-              Try demo
+              Open live demo
             </Link>
           </nav>
         </div>
@@ -82,16 +85,17 @@ export function LandingPage() {
           <div className="pointer-events-none absolute -bottom-32 -left-24 h-80 w-80 rounded-full bg-brand-gold/20 blur-3xl" />
 
           <div className="relative mx-auto max-w-6xl">
-            <p className="mb-4 inline-flex rounded-full border border-brand-primary/20 bg-brand-gold-light/50 px-4 py-1 text-sm font-medium text-brand-primary">
-              Free to start · On-premise available
+            <p className="mb-4 inline-flex rounded-full border border-amber-300/60 bg-amber-50 px-4 py-1 text-sm font-medium text-amber-900">
+              Live product demo · for restaurant operators
             </p>
             <h1 className="max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-              Waitlist management that{" "}
-              <span className="text-brand-primary">just works</span>
+              Try OpenWaitlist{" "}
+              <span className="text-brand-primary">before you deploy</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-brand-dark/70 sm:text-xl">
-              OpenWaitlist is a free, self-hostable waitlist app for restaurants — customer
-              kiosk, staff dashboard, and SMS alerts. Free to start on your own, or{" "}
+              This site is a hands-on demo of OpenWaitlist — the open-source waitlist app
+              for restaurants. Walk through the guest kiosk, staff dashboard, and optional
+              SMS flow. When you&apos;re ready to go live at your location,{" "}
               <a
                 href={CALENDLY_URL}
                 className="font-medium text-brand-primary hover:underline"
@@ -100,7 +104,7 @@ export function LandingPage() {
               >
                 book a call
               </a>{" "}
-              to have Privoce handle on-premise deployment for you.
+              for deployment and 10DLC setup.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
@@ -108,7 +112,13 @@ export function LandingPage() {
                 href="/kiosk/"
                 className="rounded-full bg-brand-primary px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand-primary/20 hover:bg-brand-primary-dark transition-colors"
               >
-                Try the demo
+                Start the demo
+              </Link>
+              <Link
+                href="/admin/waitlist/"
+                className="rounded-full border border-brand-dark/15 bg-white px-8 py-3.5 text-base font-semibold text-brand-dark hover:border-brand-primary/30 hover:bg-brand-gold-light/30 transition-colors"
+              >
+                Open staff admin
               </Link>
               <a
                 href={GITHUB_REPO_URL}
@@ -121,35 +131,28 @@ export function LandingPage() {
             </div>
 
             <p className="mt-6 text-sm text-brand-dark/50">
-              Interactive demo runs in your browser.{" "}
+              Demo URL:{" "}
               <a
                 href={LIVE_APP_URL}
                 className="text-brand-primary hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Full deployment
-              </a>{" "}
-              with database and SMS available on Vercel. For on-premise setup,{" "}
-              <a
-                href={CALENDLY_URL}
-                className="text-brand-primary hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                book a call
+                {SITE_DOMAIN}
               </a>
-              .
+              . SMS in the demo is sent by <strong>OpenWaitlist</strong> only — not on
+              behalf of a third-party restaurant. Production deployments use your own
+              brand and 10DLC campaign.
             </p>
           </div>
         </section>
 
         <section className="border-y border-brand-gold-light bg-white px-6 py-20">
           <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-semibold tracking-tight">Everything you need</h2>
+            <h2 className="text-3xl font-semibold tracking-tight">What you can try</h2>
             <p className="mt-3 max-w-2xl text-brand-dark/70">
-              From the host stand to the guest&apos;s phone — free to start, with optional
-              on-premise service from Privoce.
+              Everything on this demo is sample data for evaluation. No real guests are
+              being seated.
             </p>
 
             <div className="mt-12 grid gap-6 sm:grid-cols-2">
@@ -169,11 +172,11 @@ export function LandingPage() {
         <section className="px-6 py-20 bg-white border-y border-brand-gold-light">
           <div className="mx-auto max-w-6xl">
             <h2 className="text-3xl font-semibold tracking-tight">
-              Guest progress link
+              Sample guest progress link
             </h2>
             <p className="mt-3 max-w-2xl text-brand-dark/70">
-              Every guest gets a private link to check their place in line — sent by SMS
-              or shown after they join. Share it, text it, or embed it on your site.
+              In production, guests receive a private link by SMS. Here&apos;s a fixed
+              sample so you can see the experience without joining the demo queue.
             </p>
 
             <div className="mt-8 rounded-2xl border border-brand-gold-light bg-[#fffaf5] p-5 sm:p-6">
@@ -212,7 +215,7 @@ export function LandingPage() {
 
         <section className="px-6 py-20">
           <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-semibold tracking-tight">How it works</h2>
+            <h2 className="text-3xl font-semibold tracking-tight">How the demo works</h2>
             <div className="mt-12 grid gap-8 md:grid-cols-3">
               {steps.map((item) => (
                 <div key={item.step}>
@@ -229,17 +232,17 @@ export function LandingPage() {
 
         <section className="px-6 pb-20">
           <div className="mx-auto max-w-6xl rounded-3xl bg-brand-primary px-8 py-12 text-white sm:px-12 sm:py-16">
-            <h2 className="text-3xl font-semibold tracking-tight">Ready to get started?</h2>
+            <h2 className="text-3xl font-semibold tracking-tight">Ready to deploy at your restaurant?</h2>
             <p className="mt-4 max-w-xl text-white/85">
-              Try the demo in your browser, deploy on your own for free, or reach out for
-              on-premise installation and support.
+              Use this demo to evaluate OpenWaitlist. When you want your own instance with
+              your branding, database, and 10DLC-registered SMS, we can help with setup.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
                 href="/kiosk/"
                 className="rounded-full bg-brand-gold px-8 py-3.5 font-semibold text-brand-dark hover:bg-brand-gold/90 transition-colors"
               >
-                Open kiosk demo
+                Continue demo
               </Link>
               <a
                 href={CALENDLY_URL}
@@ -247,20 +250,9 @@ export function LandingPage() {
                 rel="noopener noreferrer"
                 className="rounded-full border border-white/30 px-8 py-3.5 font-semibold text-white hover:bg-white/10 transition-colors"
               >
-                Book a call
+                Book a deployment call
               </a>
             </div>
-            <p className="mt-5 text-sm text-white/70">
-              On-premise setup and support —{" "}
-              <a
-                href={CALENDLY_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white hover:underline"
-              >
-                book a call
-              </a>
-            </p>
           </div>
         </section>
       </main>
@@ -270,7 +262,7 @@ export function LandingPage() {
           <div>
             <OpenWaitlistLogo className="text-lg" />
             <p className="mt-2 text-sm text-brand-dark/50">
-              Open source waitlist software ·{" "}
+              Product demo · Open source by Privoce ·{" "}
               <span className="text-brand-dark/70">{SITE_DOMAIN}</span>
             </p>
           </div>
@@ -283,14 +275,9 @@ export function LandingPage() {
             >
               GitHub
             </a>
-            <a
-              href={LIVE_APP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-brand-dark/70 hover:text-brand-primary"
-            >
-              Live app
-            </a>
+            <Link href="/kiosk/" className="text-brand-dark/70 hover:text-brand-primary">
+              Live demo
+            </Link>
             <a
               href={CALENDLY_URL}
               target="_blank"

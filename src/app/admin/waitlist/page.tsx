@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useMemo, useState } from "react";
 import { AddWaitlistModal } from "@/components/AddWaitlistModal";
+import { DemoBanner } from "@/components/DemoBanner";
 import { OpenWaitlistLogo } from "@/components/OpenWaitlistLogo";
 import { WaitlistCard } from "@/components/WaitlistCard";
+import { PageSpinner } from "@/components/ui/PageSpinner";
 import { usePolling } from "@/hooks/usePolling";
 import {
   createWaitlistEntry,
@@ -49,9 +51,7 @@ function WaitlistPageContent() {
     } else if (tab === "seated") {
       list = list.filter((e) => e.status === "seated");
     } else {
-      list = list.filter((e) =>
-        ["seated", "cancelled"].includes(e.status),
-      );
+      list = list.filter((e) => ["seated", "cancelled"].includes(e.status));
     }
 
     if (search.trim()) {
@@ -97,11 +97,6 @@ function WaitlistPageContent() {
     refresh();
   };
 
-  const handleNotify = (id: string) => updateStatus(id, "notified");
-  const handleCheckIn = (id: string) => updateStatus(id, "checked_in");
-  const handleSeat = (id: string) => updateStatus(id, "seated");
-  const handleCancel = (id: string) => updateStatus(id, "cancelled");
-
   const handleAdd = async (formData: {
     name: string;
     phone: string;
@@ -120,91 +115,111 @@ function WaitlistPageContent() {
   };
 
   const today = new Date().toLocaleDateString("en-US", {
-    month: "2-digit",
-    day: "2-digit",
+    month: "short",
+    day: "numeric",
     year: "numeric",
     weekday: "short",
   });
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      <header className="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200">
-        <Link href="/" className="text-gray-400 hover:text-gray-600">
-          ←
+      <DemoBanner compact />
+
+      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 shadow-sm sm:px-6">
+        <Link
+          href="/"
+          className="rounded-lg px-2 py-1 text-sm text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800"
+        >
+          ← Home
         </Link>
-        <h1 className="font-semibold text-gray-800">Waitlist</h1>
+        <div className="text-center">
+          <h1 className="font-semibold text-gray-900">Staff admin</h1>
+          <p className="text-xs text-gray-400">Demo environment</p>
+        </div>
         <OpenWaitlistLogo className="text-sm" />
       </header>
 
-      <aside className="flex-1 max-w-lg mx-auto w-full bg-white border-x border-gray-200 flex flex-col">
-        <div className="p-4 border-b border-gray-100">
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Name or phone number"
-            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-brand-primary"
-          />
-        </div>
+      <div className="flex flex-1 justify-center px-0 sm:px-4 sm:py-4">
+        <aside className="flex w-full max-w-lg flex-col border-x border-gray-200 bg-white sm:rounded-2xl sm:border sm:shadow-sm">
+          <div className="border-b border-gray-100 p-4">
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search name, phone, or ticket"
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-brand-primary focus:bg-white focus:ring-2 focus:ring-brand-primary/10"
+            />
+          </div>
 
-        <div className="flex border-b border-gray-100 text-sm">
-          {(["waitlist", "seated", "history"] as Tab[]).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`flex-1 py-3 capitalize ${
-                tab === t
-                  ? "text-brand-primary border-b-2 border-brand-primary font-medium"
-                  : "text-gray-400"
-              }`}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
-
-        <div className="px-4 py-3 flex items-center justify-between text-sm text-gray-500 border-b border-gray-50">
-          <span>{today}</span>
-          <div className="flex gap-2">
-            {(["all", "1-2", "3-4", "5+"] as const).map((f) => (
+          <div className="flex border-b border-gray-100 text-sm">
+            {(["waitlist", "seated", "history"] as Tab[]).map((t) => (
               <button
-                key={f}
-                onClick={() => setPartyFilter(f)}
-                className={`px-2 py-0.5 rounded ${
-                  partyFilter === f
-                    ? "bg-brand-gold-light text-brand-primary-dark"
+                key={t}
+                type="button"
+                onClick={() => setTab(t)}
+                className={`flex-1 py-3.5 capitalize transition-colors ${
+                  tab === t
+                    ? "border-b-2 border-brand-primary font-semibold text-brand-primary"
                     : "text-gray-400 hover:text-gray-600"
                 }`}
               >
-                {f === "all" ? "ALL" : f} ×{partyCount(f)}
+                {t}
               </button>
             ))}
           </div>
-        </div>
 
-        <div className="flex-1 overflow-y-auto">
-          {filteredEntries.length === 0 ? (
-            <p className="text-center text-gray-400 py-12 text-sm">No entries</p>
-          ) : (
-            filteredEntries.map((entry) => (
-              <WaitlistCard
-                key={entry.id}
-                entry={entry}
-                onNotify={handleNotify}
-                onCheckIn={handleCheckIn}
-                onSeat={handleSeat}
-                onCancel={handleCancel}
-              />
-            ))
-          )}
-        </div>
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-50 px-4 py-3 text-sm text-gray-500">
+            <span>{today}</span>
+            <div className="flex flex-wrap gap-1.5">
+              {(["all", "1-2", "3-4", "5+"] as const).map((f) => (
+                <button
+                  key={f}
+                  type="button"
+                  onClick={() => setPartyFilter(f)}
+                  className={`rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+                    partyFilter === f
+                      ? "bg-brand-gold-light text-brand-primary-dark"
+                      : "text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                  }`}
+                >
+                  {f === "all" ? "All" : f} · {partyCount(f)}
+                </button>
+              ))}
+            </div>
+          </div>
 
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="m-4 rounded-full bg-brand-primary py-3 text-white font-medium text-sm"
-        >
-          + Add to waitlist
-        </button>
-      </aside>
+          <div className="min-h-[320px] flex-1 overflow-y-auto">
+            {filteredEntries.length === 0 ? (
+              <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+                <p className="text-sm font-medium text-gray-500">No entries</p>
+                <p className="mt-1 text-xs text-gray-400">
+                  Add a demo party or join from the kiosk
+                </p>
+              </div>
+            ) : (
+              filteredEntries.map((entry) => (
+                <WaitlistCard
+                  key={entry.id}
+                  entry={entry}
+                  onNotify={(id) => updateStatus(id, "notified")}
+                  onCheckIn={(id) => updateStatus(id, "checked_in")}
+                  onSeat={(id) => updateStatus(id, "seated")}
+                  onCancel={(id) => updateStatus(id, "cancelled")}
+                />
+              ))
+            )}
+          </div>
+
+          <div className="border-t border-gray-100 p-4">
+            <button
+              type="button"
+              onClick={() => setShowAddModal(true)}
+              className="w-full rounded-full bg-brand-primary py-3.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-primary-dark"
+            >
+              + Add demo party
+            </button>
+          </div>
+        </aside>
+      </div>
 
       <AddWaitlistModal
         open={showAddModal}
@@ -218,7 +233,7 @@ function WaitlistPageContent() {
 
 export default function AdminWaitlistPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-gray-100" />}>
+    <Suspense fallback={<PageSpinner label="Loading admin..." />}>
       <WaitlistPageContent />
     </Suspense>
   );

@@ -1,54 +1,131 @@
-# Telnyx 10DLC resubmission notes
+# Telnyx 10DLC — demo site campaign (resubmission)
 
-## Opt-in workflow (paste into campaign)
+Use these answers when resubmitting the **openwaitlist** campaign. The strategy is a **product demo** at `app.openwaitlist.privoce.com` for restaurant operators evaluating OpenWaitlist — **not** a live multi-restaurant guest waitlist.
+
+---
+
+## Campaign description (paste into Description field)
 
 ```
-Guests join the waitlist on an in-restaurant OpenWaitlist kiosk tablet.
+OpenWaitlist product demo. Privoce operates a public demo at https://app.openwaitlist.privoce.com for restaurant owners and managers evaluating our open-source waitlist software. Demo participants may optionally enter their own phone number and opt in to receive sample transactional SMS (queue confirmation and table-ready notifications) to see how guest messaging works before they deploy their own instance. This is not a live restaurant serving paying guests. OpenWaitlist is the sole perceived sender. Production restaurant deployments require separate per-business 10DLC brand and campaign registration.
+```
 
-1. Guest enters name (required) and party size (required).
-2. Phone number is optional and only used if the guest opts in to SMS.
-3. Guest sees an unchecked optional checkbox with this exact language next to the phone field:
+---
 
-"I agree to receive automated waitlist text messages from OpenWaitlist at the phone number above. Message frequency varies. Message and data rates may apply. Consent is not required to dine. Reply STOP to cancel. Reply HELP for help."
+## Use case
+
+**Account Notification**
+
+(Transactional sample notifications for demo participants evaluating the product.)
+
+---
+
+## Message flow / opt-in workflow (paste into Message flow field)
+
+```
+This is the OpenWaitlist product demo at https://app.openwaitlist.privoce.com — a hands-on evaluation site for restaurant operators, not a live restaurant waitlist.
+
+1. A prospective customer (restaurant owner, manager, or staff member) visits the demo kiosk at https://app.openwaitlist.privoce.com/kiosk/add/
+2. They enter a sample name (required) and party size (required) to try the product.
+3. Phone number is optional and only used if they choose to test SMS.
+4. They see an unchecked optional checkbox with this exact language:
+
+"I agree to receive automated demo waitlist text messages from OpenWaitlist at the phone number above, to see how guest SMS notifications work in this product demo. Message frequency varies. Message and data rates may apply. This is not a live restaurant waitlist. Reply STOP to cancel. Reply HELP for help."
 
 Privacy Policy: https://app.openwaitlist.privoce.com/privacy/
 Terms: https://app.openwaitlist.privoce.com/terms/
 
-4. Guest must check the box AND enter a phone number to receive SMS.
-5. Guest may join the waitlist without checking the box and without providing a phone number.
+5. SMS is sent only if the participant checks the box AND enters a valid phone number.
+6. Participants may use the demo without opting in to SMS.
+7. Messages are sent by OpenWaitlist (Privoce) as the product demo operator — not on behalf of any third-party restaurant.
 
 Live opt-in form: https://app.openwaitlist.privoce.com/kiosk/add/
 ```
 
-Upload a screenshot of the kiosk form showing the optional phone field, unchecked SMS checkbox, and consent language.
+Upload a screenshot of the kiosk form showing:
+- Amber “Product demo” banner
+- Optional phone field
+- Unchecked SMS checkbox with the consent language above
+- Privacy and Terms links
 
-## Perceived sender
+---
 
-All SMS messages are sent from **OpenWaitlist** as the sole sender identity. Message prefix:
+## Perceived sender (if asked separately)
 
-`OpenWaitlist: You've been added to the waitlist...`
+**OpenWaitlist** (operated by Privoce) is the sole sender. Recipients are **demo participants** evaluating the software — typically restaurant operators testing the product with their own phone number. This campaign does **not** send messages to end consumers on behalf of independent restaurant businesses. Each restaurant that deploys OpenWaitlist in production must register its own 10DLC brand and campaign for its guests.
 
-The kiosk UI, guest progress pages, and SMS copy all display **OpenWaitlist** — not a per-location restaurant name.
+---
 
-## Sample messages
+## Sample message 1 — queue confirmation (join)
 
-**Message 1 (join confirmation):**
 ```
-OpenWaitlist: You've been added to the waitlist. Your number is SE01. Check your place in line here: https://app.openwaitlist.privoce.com/p/waitlist/aBc12XyZ9k/ Reply HELP for help. Reply STOP to cancel.
+OpenWaitlist demo: You've been added to the sample waitlist. Your number is SE01. Check your place in line here: https://app.openwaitlist.privoce.com/p/waitlist/aBc12XyZ9k/ Reply HELP for help. Reply STOP to cancel.
 ```
 
-**Message 2 (table ready):**
+---
+
+## Sample message 2 — table ready (notify)
+
 ```
-OpenWaitlist: Hi Jane, it's your turn now! Please show the number SE01 to the host when you have arrived. Reply HELP for help. Reply STOP to cancel.
+OpenWaitlist demo: Hi Jane, it's your turn in this sample flow. Show ticket SE01 to continue the demo. Reply HELP for help. Reply STOP to cancel.
 ```
+
+---
 
 ## Keywords (no spaces after commas)
 
-- Opt in: `START,YES`
-- Opt out: `STOP,UNSUBSCRIBE,CANCEL,END,QUIT`
-- Help: `HELP,INFO`
+| Type | Keywords |
+|------|----------|
+| Opt in | `START,YES` |
+| Opt out | `STOP,UNSUBSCRIBE,CANCEL,END,QUIT` |
+| Help | `HELP,INFO` |
+
+---
 
 ## Compliance links
 
 - Privacy: https://app.openwaitlist.privoce.com/privacy/
 - Terms: https://app.openwaitlist.privoce.com/terms/
+- Demo home: https://app.openwaitlist.privoce.com/
+- Opt-in form: https://app.openwaitlist.privoce.com/kiosk/add/
+
+---
+
+## Quick reference — all form fields
+
+| Field | Answer |
+|-------|--------|
+| **Campaign description** | See “Campaign description” section above |
+| **Use case** | Account Notification |
+| **Message flow** | See “Message flow” section above |
+| **Opt-in type** | Web form (digital) |
+| **Opt-in URL** | https://app.openwaitlist.privoce.com/kiosk/add/ |
+| **Privacy policy URL** | https://app.openwaitlist.privoce.com/privacy/ |
+| **Terms URL** | https://app.openwaitlist.privoce.com/terms/ |
+| **Sample message 1** | Queue confirmation (see above) |
+| **Sample message 2** | Table ready (see above) |
+| **Opt-in keywords** | START,YES |
+| **Opt-out keywords** | STOP,UNSUBSCRIBE,CANCEL,END,QUIT |
+| **Help keywords** | HELP,INFO |
+| **Embedded link** | Yes — progress URL in sample message 1 |
+| **Embedded phone number** | No |
+| **Age-gated content** | No |
+| **Direct lending / loan** | No |
+| **Affiliate marketing** | No |
+| **Number pooling** | No |
+| **Subscriber opt-in** | Required — unchecked checkbox + phone |
+| **Subscriber opt-out** | STOP keyword |
+| **Subscriber help** | HELP keyword |
+
+---
+
+## Why this should pass review
+
+Telnyx rejected prior submissions because the campaign looked like OpenWaitlist was sending SMS **on behalf of third-party restaurants**. The demo-site positioning clarifies:
+
+1. **Sender** = OpenWaitlist (Privoce product demo)
+2. **Recipients** = people evaluating the product (often restaurant operators)
+3. **Purpose** = sample transactional messages in a demo environment
+4. **Production** = each restaurant gets its own 10DLC when they go live
+
+Match the live site, opt-in text, and sample messages exactly before resubmitting.

@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { LandingPage } from "@/components/LandingPage";
 
 export const metadata: Metadata = {
-  title: "OpenWaitlist — Open-source restaurant waitlist",
+  title: "OpenWaitlist — Live product demo",
   description:
-    "Free, self-hostable waitlist management for restaurants. Customer kiosk, staff admin, and SMS notifications.",
+    "Hands-on demo of OpenWaitlist for restaurant operators. Try the guest kiosk, staff admin, and sample SMS notifications before you deploy.",
   openGraph: {
-    title: "OpenWaitlist",
-    description: "Open-source restaurant waitlist management by Privoce.",
+    title: "OpenWaitlist — Live product demo",
+    description: "Try the open-source restaurant waitlist app before you deploy.",
     siteName: "OpenWaitlist",
   },
 };
