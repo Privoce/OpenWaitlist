@@ -1,11 +1,12 @@
 import { BRAND_NAME, DEMO_TAGLINE } from "@/lib/brand";
-import { DemoBanner } from "@/components/DemoBanner";
+import { BookingBanner } from "@/components/BookingBanner";
+import { AddToHomeScreenHint } from "@/components/AddToHomeScreenHint";
 import { PoweredBy } from "@/components/OpenWaitlistLogo";
 
 export function KioskShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-dvh flex-col overflow-hidden bg-gray-50">
-      <DemoBanner compact />
+      <BookingBanner variant="kiosk" />
       <div className="flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>
     </div>
   );
@@ -74,18 +75,21 @@ export function KioskPrimaryButton({
 export function KioskFooter({
   children,
   showPoweredBy = true,
+  showInstallHint = true,
 }: {
   children?: React.ReactNode;
   showPoweredBy?: boolean;
+  showInstallHint?: boolean;
 }) {
   return (
-    <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4 pb-6">
-      {children ? <div className="flex justify-center">{children}</div> : null}
+    <div className="shrink-0 border-t border-gray-200 bg-white">
+      {children ? <div className="flex justify-center px-6 py-4">{children}</div> : null}
       {showPoweredBy ? (
-        <div className={`flex justify-center ${children ? "mt-5" : ""}`}>
+        <div className={`flex justify-center px-6 ${children ? "pb-2" : "py-4"} ${showInstallHint ? "" : "pb-6"}`}>
           <PoweredBy variant="light" />
         </div>
       ) : null}
+      {showInstallHint ? <AddToHomeScreenHint compact /> : null}
     </div>
   );
 }

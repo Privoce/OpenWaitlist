@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useMemo, useState } from "react";
 import { AddWaitlistModal } from "@/components/AddWaitlistModal";
 import { AdminBookingBanner } from "@/components/AdminBookingBanner";
-import { DemoBanner } from "@/components/DemoBanner";
 import { DemoSessionNotice } from "@/components/DemoSessionNotice";
 import { GuestMessagePanel } from "@/components/GuestMessagePanel";
 import { OpenWaitlistLogo } from "@/components/OpenWaitlistLogo";
@@ -165,7 +164,6 @@ function WaitlistPageContent() {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      <DemoBanner compact />
       <AdminBookingBanner />
 
       <DemoSessionNotice

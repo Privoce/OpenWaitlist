@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { BRAND_NAME, DEMO_TAGLINE } from "@/lib/brand";
-import { DemoBanner } from "@/components/DemoBanner";
+import { BookingBanner } from "@/components/BookingBanner";
 import { PoweredBy } from "@/components/OpenWaitlistLogo";
 import { PageSpinner } from "@/components/ui/PageSpinner";
 
@@ -29,7 +29,7 @@ function SuccessContent() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <DemoBanner compact />
+      <BookingBanner variant="kiosk" />
 
       <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 text-center">
         <p className="text-sm text-gray-500">

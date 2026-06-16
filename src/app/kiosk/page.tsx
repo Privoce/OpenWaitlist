@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import { BRAND_NAME, DEMO_TAGLINE } from "@/lib/brand";
 import { fetchWaitlistCount } from "@/lib/data-access";
 import { PoweredBy } from "@/components/OpenWaitlistLogo";
-import { DemoBanner } from "@/components/DemoBanner";
+import { BookingBanner } from "@/components/BookingBanner";
+import { AddToHomeScreenHint } from "@/components/AddToHomeScreenHint";
 
 export default function KioskLandingPage() {
   const router = useRouter();
@@ -16,7 +17,7 @@ export default function KioskLandingPage() {
 
   return (
     <div className="relative min-h-screen flex flex-col overflow-hidden">
-      <DemoBanner compact />
+      <BookingBanner variant="kiosk" />
       <button
         type="button"
         onClick={handleStart}
@@ -40,6 +41,8 @@ export default function KioskLandingPage() {
           <PoweredBy />
         </div>
       </button>
+
+      <AddToHomeScreenHint />
     </div>
   );
 }
