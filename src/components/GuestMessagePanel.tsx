@@ -45,10 +45,12 @@ export function GuestMessagePanel({
   entry,
   onClose,
   onSmsSent,
+  onMessagesRead,
 }: {
   entry: WaitlistEntry;
   onClose: () => void;
   onSmsSent?: () => void;
+  onMessagesRead?: () => void;
 }) {
   const [messages, setMessages] = useState<SmsMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,7 +68,10 @@ export function GuestMessagePanel({
     const data = await res.json();
     setMessages(data.messages ?? []);
     setLoading(false);
-  }, [entry.id]);
+    void fetch(`/api/waitlist/${entry.id}/messages/read`, { method: "POST" }).then(
+      () => onMessagesRead?.(),
+    );
+  }, [entry.id, onMessagesRead]);
 
   useEffect(() => {
     void loadMessages();
@@ -148,7 +153,7 @@ export function GuestMessagePanel({
               )}
               {!entry.sms_opt_in && entry.phone ? (
                 <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-500">
-                  Opted out
+                  No SMS opt-in
                 </span>
               ) : null}
               <span className="text-xs text-gray-400">
@@ -244,7 +249,7 @@ export function GuestMessagePanel({
               !entry.phone
                 ? "Add a phone number to send SMS."
                 : !entry.sms_opt_in
-                  ? "Guest opted out — they can text HELP or re-join the demo."
+                  ? "Guest has not opted in to SMS — they can join the kiosk to enable replies."
                   : "Type a message to send via SMS..."
             }
             disabled={!entry.phone || !entry.sms_opt_in}

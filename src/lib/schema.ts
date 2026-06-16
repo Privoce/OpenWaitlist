@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS sms_messages (
   status TEXT NOT NULL DEFAULT 'sent',
   telnyx_message_id TEXT,
   sent_by TEXT NOT NULL DEFAULT 'system',
+  read_at TEXT,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 

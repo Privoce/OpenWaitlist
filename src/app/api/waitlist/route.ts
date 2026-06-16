@@ -5,6 +5,7 @@ import {
   listWaitlistEntries,
   searchWaitlistEntries,
 } from "@/lib/waitlist";
+import { attachUnreadCounts } from "@/lib/messages";
 import { sendQueueConfirmation } from "@/lib/sms";
 import type { WaitlistStatus } from "@/lib/types";
 
@@ -16,15 +17,19 @@ export async function GET(request: Request) {
   const q = searchParams.get("q");
 
   if (q) {
-    return NextResponse.json(await searchWaitlistEntries(q));
+    return NextResponse.json(await attachUnreadCounts(await searchWaitlistEntries(q)));
   }
 
   if (status) {
     const statuses = status.split(",") as WaitlistStatus[];
-    return NextResponse.json(await listWaitlistEntries(statuses));
+    return NextResponse.json(
+      await attachUnreadCounts(await listWaitlistEntries(statuses)),
+    );
   }
 
-  const entries = await listWaitlistEntries(["waiting", "notified", "checked_in"]);
+  const entries = await attachUnreadCounts(
+    await listWaitlistEntries(["waiting", "notified", "checked_in"]),
+  );
   const count = await getActiveWaitlistCount();
 
   return NextResponse.json({ entries, count });

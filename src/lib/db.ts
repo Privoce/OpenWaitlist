@@ -146,6 +146,16 @@ export async function initDb() {
   await migratePublicTokens();
   await migrateSmsOptIn();
   await migrateSmsMessages();
+  await migrateSmsMessageReadAt();
+}
+
+async function migrateSmsMessageReadAt() {
+  const columns = await queryAll("PRAGMA table_info(sms_messages)");
+  const hasReadAt = columns.some((column) => column.name === "read_at");
+
+  if (!hasReadAt) {
+    await execute("ALTER TABLE sms_messages ADD COLUMN read_at TEXT");
+  }
 }
 
 async function migrateSmsMessages() {
@@ -162,6 +172,7 @@ async function migrateSmsMessages() {
         status TEXT NOT NULL DEFAULT 'sent',
         telnyx_message_id TEXT,
         sent_by TEXT NOT NULL DEFAULT 'system',
+        read_at TEXT,
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )
     `);

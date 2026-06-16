@@ -151,7 +151,8 @@ https://app.openwaitlist.privoce.com/api/webhooks/telnyx
 
 | Guest texts | App behavior |
 |-------------|----------------|
-| Any reply | Logged as **Guest** in admin chat (matched by phone number) |
+| Any reply | Logged as **Guest** in admin chat (matched by phone, or auto-creates a waitlist entry) |
+| Unknown number | New **SMS guest ···1234** card appears on the waitlist (inbound only until kiosk opt-in) |
 | `STOP` | Opts guest out (`sms_opt_in = 0`); sends unsubscribe confirmation |
 | `HELP` | Sends help auto-reply with demo URL |
 

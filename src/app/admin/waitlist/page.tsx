@@ -39,6 +39,10 @@ function WaitlistPageContent() {
   const [showDemoNotice, setShowDemoNotice] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
+  const openMessagePanel = useCallback((entry: WaitlistEntry) => {
+    setMessageEntry({ ...entry, unread_message_count: 0 });
+  }, []);
+
   const recordSessionSms = useCallback(() => {
     const count = incrementSessionSmsCount();
     if (count >= 1 && !isDemoNoticeDismissed()) {
@@ -249,7 +253,7 @@ function WaitlistPageContent() {
                 <WaitlistCard
                   key={entry.id}
                   entry={entry}
-                  onMessage={setMessageEntry}
+                  onMessage={openMessagePanel}
                   onNotify={(id) => updateStatus(id, "notified")}
                   onCheckIn={(id) => updateStatus(id, "checked_in")}
                   onSeat={(id) => updateStatus(id, "seated")}
@@ -283,6 +287,7 @@ function WaitlistPageContent() {
           entry={messageEntry}
           onClose={() => setMessageEntry(null)}
           onSmsSent={recordSessionSms}
+          onMessagesRead={refresh}
         />
       ) : null}
     </div>

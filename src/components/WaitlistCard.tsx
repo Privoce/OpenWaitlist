@@ -30,6 +30,7 @@ export function WaitlistCard({
 }: WaitlistCardProps) {
   const isActive = ["waiting", "notified", "checked_in"].includes(entry.status);
   const statusLabel = entry.status.replace("_", " ");
+  const hasUnread = (entry.unread_message_count ?? 0) > 0;
 
   return (
     <div className="border-b border-gray-100 px-4 py-4 hover:bg-gray-50/80 transition-colors">
@@ -73,9 +74,25 @@ export function WaitlistCard({
         <button
           type="button"
           onClick={() => onMessage(entry)}
-          className="rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-800 transition-colors hover:bg-sky-100"
+          className={`relative rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
+            hasUnread
+              ? "message-btn-unread border-sky-400 bg-sky-100 text-sky-900 hover:bg-sky-200"
+              : "border-sky-200 bg-sky-50 text-sky-800 hover:bg-sky-100"
+          }`}
         >
           Message
+          {hasUnread ? (
+            <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5" aria-hidden>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-500 opacity-75" />
+              <span className="relative inline-flex h-3.5 w-3.5 rounded-full bg-sky-600 ring-2 ring-white" />
+            </span>
+          ) : null}
+          {hasUnread ? (
+            <span className="sr-only">
+              , {entry.unread_message_count} unread{" "}
+              {entry.unread_message_count === 1 ? "message" : "messages"}
+            </span>
+          ) : null}
         </button>
         {isActive && (
           <>

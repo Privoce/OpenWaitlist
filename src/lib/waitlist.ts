@@ -1,7 +1,7 @@
 import { getSampleWaitlistProgress, isSampleWaitlistToken } from "./demo-progress";
 import { BRAND_NAME } from "./brand";
 import { execute, queryAll, queryOne } from "./db";
-import { formatWaitTime, normalizePhoneDigits } from "./format";
+import { formatWaitTime, formatPhone, normalizePhoneDigits } from "./format";
 import { generatePublicToken } from "./public-url";
 import type {
   CreateWaitlistInput,
@@ -235,6 +235,32 @@ export async function createWaitlistEntry(
       input.notes?.trim() ?? "",
       input.source ?? "kiosk",
     ],
+  );
+
+  return (await getWaitlistEntry(id))!;
+}
+
+/** Unknown inbound texter — phone on file, no SMS opt-in until they join the kiosk. */
+export async function createWaitlistEntryFromInbound(
+  e164Phone: string,
+  messagePreview?: string,
+): Promise<WaitlistEntry> {
+  const formatted = formatPhone(normalizePhoneDigits(e164Phone));
+  const lastFour = formatted.replace(/\D/g, "").slice(-4) || "????";
+  const name = `SMS guest ···${lastFour}`;
+  const notes = messagePreview
+    ? `Inbound text: ${messagePreview.slice(0, 240)}`
+    : "Created from inbound SMS";
+
+  const id = crypto.randomUUID();
+  const ticket_number = await nextTicketNumber();
+  const public_token = generatePublicToken();
+
+  await execute(
+    `INSERT INTO waitlist_entries (
+      id, public_token, ticket_number, name, phone, sms_opt_in, party_size, child_count, notes, status, source
+    ) VALUES (?, ?, ?, ?, ?, 0, 1, 0, ?, 'waiting', 'call_in')`,
+    [id, public_token, ticket_number, name, formatted, notes],
   );
 
   return (await getWaitlistEntry(id))!;

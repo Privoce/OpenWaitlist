@@ -2,7 +2,7 @@ import { BRAND_NAME } from "./brand";
 import { execute, queryAll, queryOne } from "./db";
 import { MAX_DEMO_SMS_PER_GUEST } from "./demo-limits";
 import { isTelnyxConfigured, sendSms } from "./telnyx";
-import { findWaitlistEntryByPhone, optOutSmsByPhone } from "./waitlist";
+import { findWaitlistEntryByPhone, optOutSmsByPhone, createWaitlistEntryFromInbound } from "./waitlist";
 import { LIVE_APP_URL } from "./site";
 import type {
   SmsMessage,
@@ -125,6 +125,57 @@ export async function listMessagesForEntry(waitlistEntryId: string): Promise<Sms
   return rows.map(rowToMessage);
 }
 
+export async function getUnreadCountsByEntryIds(
+  entryIds: string[],
+): Promise<Map<string, number>> {
+  const counts = new Map<string, number>();
+  if (entryIds.length === 0) return counts;
+
+  const placeholders = entryIds.map(() => "?").join(", ");
+  const rows = await queryAll(
+    `SELECT waitlist_entry_id, COUNT(*) AS count
+     FROM sms_messages
+     WHERE direction = 'inbound' AND read_at IS NULL
+       AND waitlist_entry_id IN (${placeholders})
+     GROUP BY waitlist_entry_id`,
+    entryIds,
+  );
+
+  for (const row of rows) {
+    counts.set(String(row.waitlist_entry_id), Number(row.count ?? 0));
+  }
+
+  return counts;
+}
+
+export async function attachUnreadCounts(
+  entries: WaitlistEntry[],
+): Promise<WaitlistEntry[]> {
+  const counts = await getUnreadCountsByEntryIds(entries.map((entry) => entry.id));
+  return entries.map((entry) => ({
+    ...entry,
+    unread_message_count: counts.get(entry.id) ?? 0,
+  }));
+}
+
+export async function markInboundMessagesRead(waitlistEntryId: string): Promise<number> {
+  const before = await queryOne(
+    `SELECT COUNT(*) AS count FROM sms_messages
+     WHERE waitlist_entry_id = ? AND direction = 'inbound' AND read_at IS NULL`,
+    [waitlistEntryId],
+  );
+  const unread = Number(before?.count ?? 0);
+  if (unread === 0) return 0;
+
+  await execute(
+    `UPDATE sms_messages SET read_at = datetime('now')
+     WHERE waitlist_entry_id = ? AND direction = 'inbound' AND read_at IS NULL`,
+    [waitlistEntryId],
+  );
+
+  return unread;
+}
+
 function normalizeKeyword(text: string) {
   return text.trim().toUpperCase().replace(/[^\w]/g, "");
 }
@@ -148,6 +199,19 @@ async function sendAutoReply(entry: WaitlistEntry, body: string) {
     status: "sent",
     sent_by: "system",
   });
+}
+
+async function resolveEntryForInbound(
+  from: string,
+  messagePreview?: string,
+): Promise<{ entry: WaitlistEntry; created: boolean }> {
+  const existing = await findWaitlistEntryByPhone(from);
+  if (existing) {
+    return { entry: existing, created: false };
+  }
+
+  const entry = await createWaitlistEntryFromInbound(from, messagePreview);
+  return { entry, created: true };
 }
 
 export async function processInboundSms(input: {
@@ -185,36 +249,32 @@ export async function processInboundSms(input: {
   }
 
   if (isHelpKeyword(trimmed)) {
-    if (entry) {
-      await logInboundMessage({
-        waitlist_entry_id: entry.id,
-        body: trimmed,
-        telnyx_message_id: telnyxMessageId,
-      });
-      await sendAutoReply(
-        entry,
-        `${BRAND_NAME} demo: Product demo for restaurant waitlist software. Visit ${LIVE_APP_URL} Reply STOP to cancel.`,
-      );
-    } else {
-      await sendSms(
-        from,
-        `${BRAND_NAME} demo: Product demo for restaurant waitlist software. Visit ${LIVE_APP_URL} Reply STOP to cancel.`,
-      );
-    }
+    const { entry: helpEntry } = await resolveEntryForInbound(from, trimmed);
+    await logInboundMessage({
+      waitlist_entry_id: helpEntry.id,
+      body: trimmed,
+      telnyx_message_id: telnyxMessageId,
+    });
+    await sendAutoReply(
+      helpEntry,
+      `${BRAND_NAME} demo: Product demo for restaurant waitlist software. Visit ${LIVE_APP_URL} Reply STOP to cancel.`,
+    );
     return { handled: true, reason: "help" as const };
   }
 
-  if (!entry) {
-    return { handled: false, reason: "unknown_sender" as const };
-  }
+  const { entry: resolvedEntry, created } = await resolveEntryForInbound(from, trimmed);
 
   await logInboundMessage({
-    waitlist_entry_id: entry.id,
+    waitlist_entry_id: resolvedEntry.id,
     body: trimmed,
     telnyx_message_id: telnyxMessageId,
   });
 
-  return { handled: true, reason: "message" as const, entryId: entry.id };
+  return {
+    handled: true,
+    reason: created ? ("created" as const) : ("message" as const),
+    entryId: resolvedEntry.id,
+  };
 }
 
 export async function sendStaffMessage(
@@ -225,7 +285,7 @@ export async function sendStaffMessage(
     throw new Error("This guest has no phone number on file.");
   }
   if (!entry.sms_opt_in) {
-    throw new Error("This guest has opted out of SMS.");
+    throw new Error("This guest has not opted in to SMS.");
   }
   if (!isTelnyxConfigured()) {
     throw new Error("Telnyx SMS is not configured.");

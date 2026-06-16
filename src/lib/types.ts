@@ -45,6 +45,8 @@ export interface WaitlistEntry {
   notified_at: string | null;
   checked_in_at: string | null;
   seated_at: string | null;
+  /** Populated by API when listing entries for admin. */
+  unread_message_count?: number;
 }
 
 export interface Table {
