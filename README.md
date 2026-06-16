@@ -34,6 +34,7 @@ Open [http://localhost:3000](http://localhost:3000)
 
 **Notifications**
 - **Customer SMS (Telnyx):** queue confirmation + table-ready texts go to the guest's phone
+- **Two-way SMS:** guest replies appear in admin **Message** panel (configure Telnyx webhook — see `.github/TELNYX-10DLC.md`)
 - **Staff alerts (VoceChat):** check-in, seated, and cancel updates go to VoceChat user `437225`
 - Set `TELNYX_API_KEY` and `TELNYX_FROM_NUMBER` in `.env.local` (see `.env.example`)
 - Test SMS: set `TELNYX_TEST_TO`, then `curl -X POST http://localhost:3000/api/notifications/test`

@@ -34,9 +34,6 @@ export default function KioskLandingPage() {
             Try the demo
           </h1>
           <p className="mt-5 text-lg text-white/80">Tap anywhere to start</p>
-          <p className="mt-8 inline-flex rounded-full border border-white/25 bg-white/10 px-5 py-2 text-sm text-white/90">
-            Kiosk · Staff admin · Sample SMS
-          </p>
         </div>
 
         <div className="absolute bottom-8 left-0 right-0 flex justify-center">

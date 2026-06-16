@@ -5,6 +5,7 @@ import type { WaitlistEntry } from "@/lib/types";
 
 interface WaitlistCardProps {
   entry: WaitlistEntry;
+  onMessage: (entry: WaitlistEntry) => void;
   onNotify: (id: string) => void;
   onCheckIn: (id: string) => void;
   onSeat: (id: string) => void;
@@ -21,6 +22,7 @@ const statusStyles: Record<string, string> = {
 
 export function WaitlistCard({
   entry,
+  onMessage,
   onNotify,
   onCheckIn,
   onSeat,
@@ -67,39 +69,48 @@ export function WaitlistCard({
         <span className="capitalize">{entry.source.replace("_", " ")}</span>
       </div>
 
-      {isActive && (
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() => onNotify(entry.id)}
-            className="rounded-full bg-brand-gold px-4 py-2 text-sm font-semibold text-brand-dark transition-colors hover:bg-brand-gold/90"
-          >
-            Notify
-          </button>
-          <button
-            type="button"
-            onClick={() => onCheckIn(entry.id)}
-            className="rounded-full border border-brand-primary/20 bg-white px-4 py-2 text-sm font-semibold text-brand-primary transition-colors hover:bg-brand-gold-light/40"
-          >
-            Check in
-          </button>
-          <button
-            type="button"
-            onClick={() => onSeat(entry.id)}
-            className="rounded-full bg-brand-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-primary-dark"
-          >
-            Seat
-          </button>
-          <button
-            type="button"
-            onClick={() => onCancel(entry.id)}
-            className="ml-auto rounded-full px-3 py-2 text-sm text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
-            aria-label="Cancel entry"
-          >
-            Cancel
-          </button>
-        </div>
-      )}
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => onMessage(entry)}
+          className="rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-800 transition-colors hover:bg-sky-100"
+        >
+          Message
+        </button>
+        {isActive && (
+          <>
+            <button
+              type="button"
+              onClick={() => onNotify(entry.id)}
+              className="rounded-full bg-brand-gold px-4 py-2 text-sm font-semibold text-brand-dark transition-colors hover:bg-brand-gold/90"
+            >
+              Notify
+            </button>
+            <button
+              type="button"
+              onClick={() => onCheckIn(entry.id)}
+              className="rounded-full border border-brand-primary/20 bg-white px-4 py-2 text-sm font-semibold text-brand-primary transition-colors hover:bg-brand-gold-light/40"
+            >
+              Check in
+            </button>
+            <button
+              type="button"
+              onClick={() => onSeat(entry.id)}
+              className="rounded-full bg-brand-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-primary-dark"
+            >
+              Seat
+            </button>
+            <button
+              type="button"
+              onClick={() => onCancel(entry.id)}
+              className="ml-auto rounded-full px-3 py-2 text-sm text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+              aria-label="Cancel entry"
+            >
+              Cancel
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }

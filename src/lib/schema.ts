@@ -36,6 +36,19 @@ CREATE TABLE IF NOT EXISTS tables (
   waitlist_entry_id TEXT
 );
 
+CREATE TABLE IF NOT EXISTS sms_messages (
+  id TEXT PRIMARY KEY,
+  waitlist_entry_id TEXT NOT NULL,
+  direction TEXT NOT NULL DEFAULT 'outbound',
+  body TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'sent',
+  telnyx_message_id TEXT,
+  sent_by TEXT NOT NULL DEFAULT 'system',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_sms_messages_entry ON sms_messages(waitlist_entry_id, created_at);
+
 INSERT OR IGNORE INTO settings (id, restaurant_name, ticket_prefix)
 VALUES (1, 'OpenWaitlist', 'SE');
 `;

@@ -1,15 +1,66 @@
 import { BRAND_NAME } from "./brand";
+import { MAX_DEMO_SMS_PER_GUEST } from "./demo-limits";
+import { logOutboundMessage, updateMessageStatus } from "./messages";
+import { queryOne } from "./db";
 import { waitlistProgressUrl } from "./public-url";
 import { isTelnyxConfigured, sendSms } from "./telnyx";
 import { NOTIFY_UID, sendNotification } from "./vocechat";
 import type { WaitlistEntry, WaitlistStatus } from "./types";
+
+async function pollAndUpdateDelivery(messageId: string, telnyxId: string) {
+  const apiKey = process.env.TELNYX_API_KEY;
+  if (!apiKey) return;
+
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    const response = await fetch(`https://api.telnyx.com/v2/messages/${telnyxId}`, {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+    if (!response.ok) return;
+
+    const payload = (await response.json()) as {
+      data?: { to?: Array<{ status?: string }>; errors?: unknown[] };
+    };
+    const toStatus = payload.data?.to?.[0]?.status;
+    if (toStatus === "delivered") {
+      await updateMessageStatus(messageId, "delivered");
+    } else if (toStatus === "delivery_failed" || payload.data?.errors?.length) {
+      await updateMessageStatus(messageId, "failed");
+    }
+  } catch {
+    // Keep sent status if polling fails.
+  }
+}
 
 async function deliverToCustomer(entry: WaitlistEntry, message: string) {
   if (!isTelnyxConfigured()) {
     throw new Error("Telnyx SMS is not configured");
   }
 
+  const row = await queryOne(
+    `SELECT COUNT(*) AS count FROM sms_messages
+     WHERE waitlist_entry_id = ? AND direction = 'outbound'`,
+    [entry.id],
+  );
+  if (Number(row?.count ?? 0) >= MAX_DEMO_SMS_PER_GUEST) {
+    throw new Error(
+      `Demo limit: maximum ${MAX_DEMO_SMS_PER_GUEST} messages per guest.`,
+    );
+  }
+
   const result = await sendSms(entry.phone, message);
+  const messageId = await logOutboundMessage({
+    waitlist_entry_id: entry.id,
+    body: message,
+    telnyx_message_id: result.id ?? null,
+    status: "sent",
+    sent_by: "system",
+  });
+
+  if (result.id) {
+    void pollAndUpdateDelivery(messageId, result.id);
+  }
+
   return { success: true, message, channel: "telnyx" as const, ...result };
 }
 

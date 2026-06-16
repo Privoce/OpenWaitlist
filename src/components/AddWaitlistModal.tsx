@@ -157,17 +157,32 @@ export function AddWaitlistModal({
               <label className="text-sm font-medium text-gray-600">
                 Phone<span className="text-brand-primary"> *</span>
               </label>
-              <button
-                type="button"
-                onClick={() => setActiveField("phone")}
-                className={`mt-2 w-full rounded-xl border px-4 py-2.5 text-left text-base outline-none ${
-                  activeField === "phone"
-                    ? "border-brand-primary ring-2 ring-brand-primary/10"
-                    : "border-gray-200"
-                }`}
-              >
-                {phone || "Tap to enter phone"}
-              </button>
+              {kioskMode ? (
+                <button
+                  type="button"
+                  onClick={() => setActiveField("phone")}
+                  className={`mt-2 w-full rounded-xl border px-4 py-2.5 text-left text-base outline-none ${
+                    activeField === "phone"
+                      ? "border-brand-primary ring-2 ring-brand-primary/10"
+                      : "border-gray-200"
+                  }`}
+                >
+                  {phone || "Tap to enter phone"}
+                </button>
+              ) : (
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  value={phone}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                    setPhone(formatPhone(digits));
+                  }}
+                  className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-2.5 text-base outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10"
+                  placeholder="Phone number"
+                />
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -175,31 +190,55 @@ export function AddWaitlistModal({
                 <label className="text-sm font-medium text-gray-600">
                   Party size<span className="text-brand-primary"> *</span>
                 </label>
-                <button
-                  type="button"
-                  onClick={() => setActiveField("party")}
-                  className={`mt-2 w-full rounded-xl border px-4 py-2.5 text-left text-base outline-none ${
-                    activeField === "party"
-                      ? "border-brand-primary ring-2 ring-brand-primary/10"
-                      : "border-gray-200"
-                  }`}
-                >
-                  {partySize || "—"}
-                </button>
+                {kioskMode ? (
+                  <button
+                    type="button"
+                    onClick={() => setActiveField("party")}
+                    className={`mt-2 w-full rounded-xl border px-4 py-2.5 text-left text-base outline-none ${
+                      activeField === "party"
+                        ? "border-brand-primary ring-2 ring-brand-primary/10"
+                        : "border-gray-200"
+                    }`}
+                  >
+                    {partySize || "—"}
+                  </button>
+                ) : (
+                  <input
+                    type="number"
+                    min={1}
+                    max={99}
+                    value={partySize}
+                    onChange={(e) => setPartySize(e.target.value.replace(/\D/g, "").slice(0, 2))}
+                    className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-2.5 text-base outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10"
+                    placeholder="2"
+                  />
+                )}
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-600">Children</label>
-                <button
-                  type="button"
-                  onClick={() => setActiveField("child")}
-                  className={`mt-2 w-full rounded-xl border px-4 py-2.5 text-left text-base outline-none ${
-                    activeField === "child"
-                      ? "border-brand-primary ring-2 ring-brand-primary/10"
-                      : "border-gray-200"
-                  }`}
-                >
-                  {childCount || "0"}
-                </button>
+                {kioskMode ? (
+                  <button
+                    type="button"
+                    onClick={() => setActiveField("child")}
+                    className={`mt-2 w-full rounded-xl border px-4 py-2.5 text-left text-base outline-none ${
+                      activeField === "child"
+                        ? "border-brand-primary ring-2 ring-brand-primary/10"
+                        : "border-gray-200"
+                    }`}
+                  >
+                    {childCount || "0"}
+                  </button>
+                ) : (
+                  <input
+                    type="number"
+                    min={0}
+                    max={99}
+                    value={childCount}
+                    onChange={(e) => setChildCount(e.target.value.replace(/\D/g, "").slice(0, 2))}
+                    className="mt-2 w-full rounded-xl border border-gray-200 px-4 py-2.5 text-base outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/10"
+                    placeholder="0"
+                  />
+                )}
               </div>
             </div>
 

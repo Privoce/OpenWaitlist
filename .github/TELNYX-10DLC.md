@@ -129,3 +129,34 @@ Telnyx rejected prior submissions because the campaign looked like OpenWaitlist 
 4. **Production** = each restaurant gets its own 10DLC when they go live
 
 Match the live site, opt-in text, and sample messages exactly before resubmitting.
+
+---
+
+## Inbound SMS webhook (guest replies)
+
+To receive guest replies in the admin **Message** panel, point your Telnyx **Messaging Profile** webhook at:
+
+```
+https://app.openwaitlist.privoce.com/api/webhooks/telnyx
+```
+
+### Telnyx Mission Control setup
+
+1. Open **Messaging** → your **Messaging Profile** (the one linked to `+16672911966`).
+2. Under **Webhooks**, set **Webhook URL** to the URL above.
+3. Enable **`message.received`** (inbound SMS).
+4. Save. Telnyx will POST inbound texts to the app.
+
+### What the app does
+
+| Guest texts | App behavior |
+|-------------|----------------|
+| Any reply | Logged as **Guest** in admin chat (matched by phone number) |
+| `STOP` | Opts guest out (`sms_opt_in = 0`); sends unsubscribe confirmation |
+| `HELP` | Sends help auto-reply with demo URL |
+
+Guest replies do **not** count toward the demo outbound SMS limits. Staff cannot send new SMS to guests who have opted out.
+
+### Local testing
+
+Use [ngrok](https://ngrok.com) or similar to expose `http://127.0.0.1:3000/api/webhooks/telnyx` and paste that URL into Telnyx temporarily.

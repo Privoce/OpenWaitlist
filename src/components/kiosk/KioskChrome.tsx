@@ -4,9 +4,9 @@ import { PoweredBy } from "@/components/OpenWaitlistLogo";
 
 export function KioskShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="flex h-dvh flex-col overflow-hidden bg-gray-50">
       <DemoBanner compact />
-      {children}
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>
     </div>
   );
 }
@@ -79,7 +79,7 @@ export function KioskFooter({
   showPoweredBy?: boolean;
 }) {
   return (
-    <div className="mt-auto border-t border-gray-200 bg-white px-6 py-6 pb-10">
+    <div className="shrink-0 border-t border-gray-200 bg-white px-6 py-4 pb-6">
       {children ? <div className="flex justify-center">{children}</div> : null}
       {showPoweredBy ? (
         <div className={`flex justify-center ${children ? "mt-5" : ""}`}>

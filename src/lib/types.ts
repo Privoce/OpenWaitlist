@@ -63,6 +63,21 @@ export interface Settings {
   ticket_prefix: string;
 }
 
+export type SmsMessageStatus = "sent" | "delivered" | "failed" | "received";
+export type SmsMessageSender = "system" | "staff" | "guest";
+export type SmsMessageDirection = "inbound" | "outbound";
+
+export interface SmsMessage {
+  id: string;
+  waitlist_entry_id: string;
+  direction: SmsMessageDirection;
+  body: string;
+  status: SmsMessageStatus;
+  telnyx_message_id: string | null;
+  sent_by: SmsMessageSender;
+  created_at: string;
+}
+
 export interface CreateWaitlistInput {
   name: string;
   phone?: string;

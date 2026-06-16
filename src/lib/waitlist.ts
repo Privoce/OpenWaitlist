@@ -1,7 +1,7 @@
 import { getSampleWaitlistProgress, isSampleWaitlistToken } from "./demo-progress";
 import { BRAND_NAME } from "./brand";
 import { execute, queryAll, queryOne } from "./db";
-import { formatWaitTime } from "./format";
+import { formatWaitTime, normalizePhoneDigits } from "./format";
 import { generatePublicToken } from "./public-url";
 import type {
   CreateWaitlistInput,
@@ -117,6 +117,48 @@ export async function getWaitlistEntryByToken(
     [token],
   );
   return row ? rowToEntry(row) : null;
+}
+
+export async function findWaitlistEntryByPhone(
+  phone: string,
+): Promise<WaitlistEntry | null> {
+  const target = normalizePhoneDigits(phone);
+  if (target.length < 10) return null;
+
+  const rows = await queryAll(
+    `SELECT * FROM waitlist_entries
+     WHERE phone != ''
+     ORDER BY created_at DESC`,
+  );
+
+  for (const row of rows) {
+    if (normalizePhoneDigits(String(row.phone)) === target) {
+      return rowToEntry(row);
+    }
+  }
+
+  return null;
+}
+
+export async function optOutSmsByPhone(phone: string): Promise<number> {
+  const target = normalizePhoneDigits(phone);
+  if (target.length < 10) return 0;
+
+  const rows = await queryAll(
+    `SELECT id, phone FROM waitlist_entries WHERE phone != '' AND sms_opt_in = 1`,
+  );
+
+  let updated = 0;
+  for (const row of rows) {
+    if (normalizePhoneDigits(String(row.phone)) === target) {
+      await execute("UPDATE waitlist_entries SET sms_opt_in = 0 WHERE id = ?", [
+        row.id,
+      ]);
+      updated += 1;
+    }
+  }
+
+  return updated;
 }
 
 function firstName(name: string) {

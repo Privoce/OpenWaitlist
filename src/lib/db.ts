@@ -145,6 +145,30 @@ export async function initDb() {
   dbReady = true;
   await migratePublicTokens();
   await migrateSmsOptIn();
+  await migrateSmsMessages();
+}
+
+async function migrateSmsMessages() {
+  const tables = await queryAll(
+    "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'sms_messages'",
+  );
+  if (tables.length === 0) {
+    await execute(`
+      CREATE TABLE IF NOT EXISTS sms_messages (
+        id TEXT PRIMARY KEY,
+        waitlist_entry_id TEXT NOT NULL,
+        direction TEXT NOT NULL DEFAULT 'outbound',
+        body TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'sent',
+        telnyx_message_id TEXT,
+        sent_by TEXT NOT NULL DEFAULT 'system',
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )
+    `);
+    await execute(
+      "CREATE INDEX IF NOT EXISTS idx_sms_messages_entry ON sms_messages(waitlist_entry_id, created_at)",
+    );
+  }
 }
 
 async function migrateSmsOptIn() {

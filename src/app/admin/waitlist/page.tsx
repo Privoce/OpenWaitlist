@@ -4,7 +4,10 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useMemo, useState } from "react";
 import { AddWaitlistModal } from "@/components/AddWaitlistModal";
+import { AdminBookingBanner } from "@/components/AdminBookingBanner";
 import { DemoBanner } from "@/components/DemoBanner";
+import { DemoSessionNotice } from "@/components/DemoSessionNotice";
+import { GuestMessagePanel } from "@/components/GuestMessagePanel";
 import { OpenWaitlistLogo } from "@/components/OpenWaitlistLogo";
 import { WaitlistCard } from "@/components/WaitlistCard";
 import { PageSpinner } from "@/components/ui/PageSpinner";
@@ -14,6 +17,12 @@ import {
   fetchAllEntries,
   patchWaitlistStatus,
 } from "@/lib/data-access";
+import {
+  DEMO_SMS_LIMIT_MESSAGE,
+  incrementSessionSmsCount,
+  isDemoNoticeDismissed,
+  isSessionSmsLimitReached,
+} from "@/lib/demo-limits";
 import type { WaitlistEntry, WaitlistSource } from "@/lib/types";
 
 type Tab = "waitlist" | "seated" | "history";
@@ -26,6 +35,16 @@ function WaitlistPageContent() {
   const [search, setSearch] = useState("");
   const [partyFilter, setPartyFilter] = useState<"all" | "1-2" | "3-4" | "5+">("all");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [messageEntry, setMessageEntry] = useState<WaitlistEntry | null>(null);
+  const [showDemoNotice, setShowDemoNotice] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  const recordSessionSms = useCallback(() => {
+    const count = incrementSessionSmsCount();
+    if (count >= 1 && !isDemoNoticeDismissed()) {
+      setShowDemoNotice(true);
+    }
+  }, []);
 
   const fetchData = useCallback(async () => {
     const entries = await fetchAllEntries([
@@ -93,7 +112,26 @@ function WaitlistPageContent() {
   };
 
   const updateStatus = async (id: string, status: WaitlistEntry["status"]) => {
-    await patchWaitlistStatus(id, status);
+    setActionError(null);
+    const entry = entries.find((item) => item.id === id);
+
+    if (status === "notified" && entry?.sms_opt_in && entry.phone) {
+      if (isSessionSmsLimitReached()) {
+        setActionError(DEMO_SMS_LIMIT_MESSAGE);
+        return;
+      }
+    }
+
+    const updated = await patchWaitlistStatus(id, status);
+    if (!updated) {
+      setActionError("Could not update this entry.");
+      return;
+    }
+
+    if (status === "notified" && updated.sms_opt_in && updated.phone) {
+      recordSessionSms();
+    }
+
     refresh();
   };
 
@@ -124,6 +162,12 @@ function WaitlistPageContent() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <DemoBanner compact />
+      <AdminBookingBanner />
+
+      <DemoSessionNotice
+        visible={showDemoNotice}
+        onDismiss={() => setShowDemoNotice(false)}
+      />
 
       <header className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 shadow-sm sm:px-6">
         <Link
@@ -142,6 +186,11 @@ function WaitlistPageContent() {
       <div className="flex flex-1 justify-center px-0 sm:px-4 sm:py-4">
         <aside className="flex w-full max-w-lg flex-col border-x border-gray-200 bg-white sm:rounded-2xl sm:border sm:shadow-sm">
           <div className="border-b border-gray-100 p-4">
+            {actionError ? (
+              <p className="mb-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                {actionError}
+              </p>
+            ) : null}
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -200,6 +249,7 @@ function WaitlistPageContent() {
                 <WaitlistCard
                   key={entry.id}
                   entry={entry}
+                  onMessage={setMessageEntry}
                   onNotify={(id) => updateStatus(id, "notified")}
                   onCheckIn={(id) => updateStatus(id, "checked_in")}
                   onSeat={(id) => updateStatus(id, "seated")}
@@ -227,6 +277,14 @@ function WaitlistPageContent() {
         onSubmit={handleAdd}
         source={defaultSource}
       />
+
+      {messageEntry ? (
+        <GuestMessagePanel
+          entry={messageEntry}
+          onClose={() => setMessageEntry(null)}
+          onSmsSent={recordSessionSms}
+        />
+      ) : null}
     </div>
   );
 }
