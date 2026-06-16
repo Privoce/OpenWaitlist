@@ -47,7 +47,7 @@ function SuccessContent() {
         <p className="mt-8 max-w-sm text-sm text-gray-500">
           {smsOptIn
             ? "Check your phone for a sample SMS. Staff can notify you from the admin demo."
-            : "Open staff admin to try notifying this party, or show this ticket in the demo flow."}
+            : "Open the host dashboard to try notifying this party, or show this ticket in the demo flow."}
         </p>
 
         {token ? (

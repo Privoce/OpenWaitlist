@@ -44,7 +44,7 @@ const steps = [
     step: "2",
     title: "Manage the queue",
     description:
-      "Open staff admin to notify, check in, and seat demo entries like your team would.",
+      "Open the host dashboard to notify, check in, and seat demo entries like your team would.",
   },
   {
     step: "3",
@@ -112,13 +112,13 @@ export function LandingPage() {
                 href="/kiosk/"
                 className="rounded-full bg-brand-primary px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand-primary/20 hover:bg-brand-primary-dark transition-colors"
               >
-                Start the demo
+                Try the guest kiosk
               </Link>
               <Link
                 href="/admin/waitlist/"
                 className="rounded-full border border-brand-dark/15 bg-white px-8 py-3.5 text-base font-semibold text-brand-dark hover:border-brand-primary/30 hover:bg-brand-gold-light/30 transition-colors"
               >
-                Open staff admin
+                Try the host dashboard
               </Link>
               <a
                 href={GITHUB_REPO_URL}
