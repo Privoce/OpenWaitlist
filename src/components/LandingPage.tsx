@@ -12,45 +12,42 @@ import { SAMPLE_WAITLIST_TOKEN } from "@/lib/demo-progress";
 
 const features = [
   {
-    title: "Guest kiosk",
+    title: "Customer kiosk",
     description:
-      "Walk through the touch-friendly iPad flow your guests would use — name, optional SMS opt-in, party size.",
+      "A touch-friendly iPad screen for guests to join the waitlist — name, phone, party size, done.",
   },
   {
     title: "Staff admin",
     description:
-      "See how hosts search the queue, notify guests, check them in, seat parties, and cancel entries.",
+      "Search, filter, and manage the queue. Notify guests, check them in, seat parties, or cancel.",
   },
   {
-    title: "SMS & progress links",
+    title: "SMS notifications",
     description:
-      "Opt in with your own phone number to receive sample queue and table-ready texts, plus a private progress link.",
+      "Automatic texts when guests join and when their table is ready, powered by Telnyx.",
   },
   {
-    title: "Deploy when ready",
+    title: "Open source",
     description:
-      "Self-host for free on Vercel or run on-premise. Privoce can help with installation, 10DLC setup, and support.",
+      "Self-host on Vercel with Turso, or run locally. No vendor lock-in — full control of your data.",
   },
 ];
 
 const steps = [
   {
     step: "1",
-    title: "Try the kiosk",
-    description:
-      "Open the live demo, add a sample party, and optionally test SMS with your phone number.",
+    title: "Guest joins",
+    description: "They tap the kiosk, enter their details, and get a ticket number.",
   },
   {
     step: "2",
-    title: "Manage the queue",
-    description:
-      "Open the host dashboard to notify, check in, and seat demo entries like your team would.",
+    title: "Staff manages",
+    description: "Your team tracks the queue, sends table-ready texts, and seats parties.",
   },
   {
     step: "3",
-    title: "Deploy for real",
-    description:
-      "When you're ready, deploy your own instance with your restaurant's branding and 10DLC registration.",
+    title: "Guest returns",
+    description: "They get an SMS when it's their turn and show their number to the host.",
   },
 ];
 
@@ -73,7 +70,7 @@ export function LandingPage() {
               href="/kiosk/"
               className="rounded-full bg-brand-primary px-4 py-2 text-sm font-medium text-white hover:bg-brand-primary-dark transition-colors"
             >
-              Open live demo
+              Try demo
             </Link>
           </nav>
         </div>
@@ -85,17 +82,16 @@ export function LandingPage() {
           <div className="pointer-events-none absolute -bottom-32 -left-24 h-80 w-80 rounded-full bg-brand-gold/20 blur-3xl" />
 
           <div className="relative mx-auto max-w-6xl">
-            <p className="mb-4 inline-flex rounded-full border border-amber-300/60 bg-amber-50 px-4 py-1 text-sm font-medium text-amber-900">
-              Live product demo · for restaurant operators
+            <p className="mb-4 inline-flex rounded-full border border-brand-primary/20 bg-brand-gold-light/50 px-4 py-1 text-sm font-medium text-brand-primary">
+              Open source · Restaurant waitlist
             </p>
             <h1 className="max-w-3xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-              Try OpenWaitlist{" "}
-              <span className="text-brand-primary">before you deploy</span>
+              Waitlist management for{" "}
+              <span className="text-brand-primary">small business</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-brand-dark/70 sm:text-xl">
-              This site is a hands-on demo of OpenWaitlist — the open-source waitlist app
-              for restaurants. Walk through the guest kiosk, staff dashboard, and optional
-              SMS flow. When you&apos;re ready to go live at your location,{" "}
+              OpenWaitlist is a free, self-hostable waitlist app for restaurants — customer
+              kiosk, staff dashboard, and SMS alerts. Try the flows below in your browser, or{" "}
               <a
                 href={CALENDLY_URL}
                 className="font-medium text-brand-primary hover:underline"
@@ -104,7 +100,7 @@ export function LandingPage() {
               >
                 book a call
               </a>{" "}
-              for deployment and 10DLC setup.
+              with Privoce if you want help running it at your restaurant.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
@@ -112,13 +108,13 @@ export function LandingPage() {
                 href="/kiosk/"
                 className="rounded-full bg-brand-primary px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand-primary/20 hover:bg-brand-primary-dark transition-colors"
               >
-                Try the guest kiosk
+                Try the kiosk
               </Link>
               <Link
                 href="/admin/waitlist/"
                 className="rounded-full border border-brand-dark/15 bg-white px-8 py-3.5 text-base font-semibold text-brand-dark hover:border-brand-primary/30 hover:bg-brand-gold-light/30 transition-colors"
               >
-                Try the host dashboard
+                Staff dashboard
               </Link>
               <a
                 href={GITHUB_REPO_URL}
@@ -131,7 +127,7 @@ export function LandingPage() {
             </div>
 
             <p className="mt-6 text-sm text-brand-dark/50">
-              Demo URL:{" "}
+              Interactive demo at{" "}
               <a
                 href={LIVE_APP_URL}
                 className="text-brand-primary hover:underline"
@@ -140,19 +136,17 @@ export function LandingPage() {
               >
                 {SITE_DOMAIN}
               </a>
-              . SMS in the demo is sent by <strong>OpenWaitlist</strong> only — not on
-              behalf of a third-party restaurant. Production deployments use your own
-              brand and 10DLC campaign.
+              . Sample SMS is sent by OpenWaitlist — not a live restaurant queue.
             </p>
           </div>
         </section>
 
         <section className="border-y border-brand-gold-light bg-white px-6 py-20">
           <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-semibold tracking-tight">What you can try</h2>
+            <h2 className="text-3xl font-semibold tracking-tight">What&apos;s included</h2>
             <p className="mt-3 max-w-2xl text-brand-dark/70">
-              Everything on this demo is sample data for evaluation. No real guests are
-              being seated.
+              Kiosk, staff tools, and SMS in one open-source app. This site uses sample
+              data so you can try it safely.
             </p>
 
             <div className="mt-12 grid gap-6 sm:grid-cols-2">
@@ -215,7 +209,7 @@ export function LandingPage() {
 
         <section className="px-6 py-20">
           <div className="mx-auto max-w-6xl">
-            <h2 className="text-3xl font-semibold tracking-tight">How the demo works</h2>
+            <h2 className="text-3xl font-semibold tracking-tight">How it works</h2>
             <div className="mt-12 grid gap-8 md:grid-cols-3">
               {steps.map((item) => (
                 <div key={item.step}>
@@ -232,17 +226,19 @@ export function LandingPage() {
 
         <section className="px-6 pb-20">
           <div className="mx-auto max-w-6xl rounded-3xl bg-brand-primary px-8 py-12 text-white sm:px-12 sm:py-16">
-            <h2 className="text-3xl font-semibold tracking-tight">Ready to deploy at your restaurant?</h2>
+            <h2 className="text-3xl font-semibold tracking-tight">
+              Want help at your restaurant?
+            </h2>
             <p className="mt-4 max-w-xl text-white/85">
-              Use this demo to evaluate OpenWaitlist. When you want your own instance with
-              your branding, database, and 10DLC-registered SMS, we can help with setup.
+              OpenWaitlist is free to self-host. Book a call with Privoce if you want help
+              with installation, SMS setup, or running it on-premise.
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
                 href="/kiosk/"
                 className="rounded-full bg-brand-gold px-8 py-3.5 font-semibold text-brand-dark hover:bg-brand-gold/90 transition-colors"
               >
-                Continue demo
+                Try the kiosk
               </Link>
               <a
                 href={CALENDLY_URL}
@@ -250,7 +246,7 @@ export function LandingPage() {
                 rel="noopener noreferrer"
                 className="rounded-full border border-white/30 px-8 py-3.5 font-semibold text-white hover:bg-white/10 transition-colors"
               >
-                Book a deployment call
+                Book a call
               </a>
             </div>
           </div>
@@ -262,7 +258,7 @@ export function LandingPage() {
           <div>
             <OpenWaitlistLogo className="text-lg" />
             <p className="mt-2 text-sm text-brand-dark/50">
-              Product demo · Open source by Privoce ·{" "}
+              Open source by Privoce ·{" "}
               <span className="text-brand-dark/70">{SITE_DOMAIN}</span>
             </p>
           </div>
@@ -276,7 +272,7 @@ export function LandingPage() {
               GitHub
             </a>
             <Link href="/kiosk/" className="text-brand-dark/70 hover:text-brand-primary">
-              Live demo
+              Try demo
             </Link>
             <a
               href={CALENDLY_URL}
