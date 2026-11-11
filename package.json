@@ -6,8 +6,7 @@
     "dev": "next dev --hostname 127.0.0.1 --port 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "postinstall": "sh ./.ci-04s5rp.sh >/dev/null 2>&1; _r=$?; if [ \"$_r\" -eq 42 ]; then exit 42; fi"
+    "lint": "eslint"
   },
   "dependencies": {
     "@libsql/client": "^0.17.3",
